@@ -1,0 +1,63 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@font-face {
+  font-family: "cheltenham";
+  src: url("/fonts/cheltenham/cheltenham-normal-300.ttf") format("truetype");
+  font-weight: 300;
+  font-style: normal;
+}
+@font-face {
+  font-family: "cheltenham";
+  src: url("/fonts/cheltenham/cheltenham-normal-700.ttf") format("truetype");
+  font-weight: 700;
+  font-style: bold;
+}
+@font-face {
+  font-family: "cheltenham";
+  src: url("/fonts/cheltenham/cheltenham-italic-400.ttf") format("truetype");
+  font-weight: 400;
+  font-style: italic;
+}
+
+body {
+  color: var(--background);
+  background: var(--foreground);
+  font-family: "cheltenham", Helvetica, sans-serif;
+}
+
+@layer base {
+  :root {
+    --radius: 0.5rem;
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  .group.peer.hidden {
+    display: block;
+  }
+  .dark {
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+}
+.activeMenuLink {
+  background-color: #f0f0f0; /* Highlight active item */
+  color: #0070f3; /* Change text color */
+  font-weight: bold;
+}
+.error {
+  color: rgb(129, 12, 12);
+}

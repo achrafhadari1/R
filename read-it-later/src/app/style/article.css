@@ -1,0 +1,129 @@
+.article_header {
+  font-family: "cheltenham";
+  font-weight: 400;
+  font-style: italic;
+  font-size: 4rem;
+}
+.article_content img {
+  margin-left: auto;
+  height: auto;
+  width: 50%;
+  border-radius: 16px;
+  margin-top: 2rem;
+  margin-right: auto;
+  margin-bottom: 2rem;
+}
+.article_content iframe {
+  margin-left: auto;
+  width: 66rem;
+  height: 600px;
+  border-radius: 16px;
+  margin-top: 2rem;
+  margin-right: auto;
+  margin-bottom: 2rem;
+}
+.articleConta a {
+  color: rgb(26, 71, 71);
+  text-decoration: underline;
+}
+
+aside {
+  display: none;
+}
+#feature-bar {
+  display: none;
+}
+header {
+  display: none;
+}
+footer {
+  display: none;
+}
+[class*="offer"],
+[id*="Banner"],
+[id*="offer"],
+[id*="ad_"],
+[id*="ad-"],
+[class*="ad-"],
+[id*="_ad"],
+[class*="_ad"],
+[id*="-ad"],
+[class*="-ad"],
+[id*="badge"],
+[class*="-share"],
+[class*="share_"],
+[class*="_share"],
+[class*="share-"] {
+  display: none;
+}
+.article_content button svg {
+  display: none;
+}
+
+.articleConta em {
+  font-weight: 700;
+  color: rgb(22, 22, 22);
+}
+.articleConta p {
+  margin-bottom: 1rem;
+}
+.pullquote {
+  width: 60%;
+  color: #7b3131;
+  font-size: 3rem;
+  padding: 3rem 0 3rem 0;
+  text-align: center;
+  display: flex;
+  margin: auto;
+}
+/* bbc */
+div[data-component="byline-block"],
+div[data-component="ad-slot"],
+div[data-component="tags"] {
+  display: none;
+}
+.articleConta figure {
+  display: none;
+}
+.sc-118zqaw-1.iAVdGx {
+  /* for amazon ads */
+  display: none;
+}
+.insert-post-ads {
+  display: none;
+}
+.inner_wrapper.fullwidth > p {
+  margin-bottom: 1rem;
+}
+.top-zin {
+  z-index: 999999;
+}
+.highlight-red {
+  background-color: rgba(185, 28, 28, 0.3) !important;
+  text-decoration: underline;
+  text-decoration-color: rgb(185, 28, 28);
+}
+
+.highlight-orange {
+  background-color: rgba(255, 165, 0, 0.3) !important;
+  text-decoration: underline;
+  text-decoration-color: orange;
+}
+.highlight-yellow {
+  background-color: rgba(255, 255, 0, 0.3) !important;
+  text-decoration: underline;
+  text-decoration-color: yellow;
+}
+
+.highlight-blue {
+  background-color: rgba(30, 144, 255, 0.3) !important;
+  text-decoration: underline;
+  text-decoration-color: blue;
+}
+
+.highlight-green {
+  background-color: rgba(34, 139, 34, 0.3) !important;
+  text-decoration: underline;
+  text-decoration-color: green;
+}
+/* Add similar classes for other colors */

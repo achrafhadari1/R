@@ -1,0 +1,151 @@
+.w-10per {
+  width: 8%;
+}
+.svg-size {
+  width: 100%;
+  height: 100%;
+}
+.home-container {
+  width: 85%;
+  margin-left: auto;
+  margin-right: auto;
+}
+.hide-this-shit {
+  display: flex !important;
+}
+.group.peer.hidden {
+  display: inline-block !important;
+}
+.div2home {
+  /* display: grid;
+  grid-template-columns: repeat(3, 1fr); */
+  display: flex;
+}
+
+/* @media only screen and (min-width: 1800px) {
+  .div2home {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+@media only screen and (max-width: 500px) {
+  .div2home {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+  }
+} */
+.home_svg_container {
+  width: 14rem;
+  height: 2.4rem;
+}
+.w-90per {
+  width: 90%;
+}
+.title-article-home {
+  font-family: "cheltenham";
+  font-weight: 700;
+  font-style: normal;
+  height: 7rem;
+  font-size: 1.2rem;
+  transition: 0.2s ease-in-out;
+}
+.title-article-home-bottom {
+  height: 3rem;
+  align-items: end;
+  z-index: 1000;
+}
+.ArticleContainerSingle:hover {
+  cursor: pointer;
+  background-color: rgb(34, 33, 33);
+  color: white;
+  transition: ease-in-out 0.2s;
+}
+.ArticleContainerSingle:hover .lead_image {
+  opacity: 0.7;
+  transition: ease-in-out 0.2s;
+}
+.popuptogo {
+  transition: ease-in-out 0.2s;
+}
+.ArticleContainerSingle:hover .popuptogo {
+  display: block;
+  transition: ease-in-out 0.2s;
+}
+.addArticleInput {
+  color: black;
+  background-color: black !important;
+  height: 36px;
+  right: 26px;
+  border-top-left-radius: 12px;
+  border-bottom-left-radius: 12px;
+  opacity: 1;
+  align-self: center;
+  width: 25rem;
+  color: white !important;
+  padding-left: 1rem;
+  animation: fadeInLeft 0.6s ease-in-out;
+  display: none;
+  top: 1.89px;
+}
+.svg_image {
+  align-self: center;
+  cursor: pointer;
+  z-index: 9999;
+}
+.svg_image > img {
+  width: 55px;
+  height: 52.6px;
+}
+textarea:focus,
+input:focus {
+  outline: none;
+}
+.svg_image:hover ~ .addArticleForm .addArticleInput {
+  display: block !important;
+  animation: fadeInRight 0.6s ease-in-out;
+}
+.addArticleInput:hover {
+  display: block;
+}
+.addArticleInput:not(hover) {
+  animation: fadeInRight 0.6s ease-in-out;
+}
+@keyframes fadeInRight {
+  from {
+    width: 0rem;
+  }
+  to {
+    width: 25rem;
+  }
+}
+@keyframes fadeInLeft {
+  from {
+    width: 25rem;
+  }
+  to {
+    width: 0rem;
+  }
+}
+.ArticleContainerSingle {
+  /* border-right: 1px solid black;
+  border-left: 1px solid black;*/
+  margin-bottom: 2rem;
+  /* padding: 1rem; */
+}
+.delete-icon {
+  transition: ease-in-out 0.2s;
+}
+.delete-icon:hover {
+  color: red;
+  z-index: 20;
+  transition: ease-in-out 0.2s;
+}
+
+.go-to-original {
+  transition: ease-in-out 0.2s;
+}
+.go-to-original:hover {
+  color: rgb(182, 174, 230);
+  z-index: 20;
+  transition: ease-in-out 0.2s;
+}
