@@ -42,7 +42,7 @@ export async function parseArticle(url) {
 async function scrapeWithPuppeteer(url) {
   const browser = await puppeteer.launch();
   const page = await browser.newPage();
-  await page.goto(url);
+  await page.goto(url, { timeout: 0 });
 
   const data = await page.evaluate(() => {
     const articleElement = document.querySelector("article");

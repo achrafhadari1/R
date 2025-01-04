@@ -3,15 +3,17 @@ import { CiStickyNote } from "react-icons/ci";
 import { Textarea } from "@/components/ui/textarea";
 
 export const SelectMenu = () => {
-  const [selection, setSelection] = useState("");
-  const [state, setState] = useState("");
-  const [position, setPosition] = useState({});
-  const [isPopupOpen, setIsPopupOpen] = useState(false);
-
+  const [selection, setSelection] = useState(""); // Store selected text
+  const [state, setState] = useState(""); // Manage selection state
+  const [position, setPosition] = useState({}); // Position of the selection for positioning the menu
+  const [isPopupOpen, setIsPopupOpen] = useState(false); // Manage popup state
+  const [highlightedButton, setHighlightedButton] = useState(null); // Currently selected button for color change
+  const [clickedHighlight, setClickedHighlight] = useState(null); // Store all highlights (array of highlight objects)
+  const [highlights, setHighlights] = useState([]); // Store all highlights (array of highlight objects)
   useEffect(() => {
     const handleSelectStart = () => {
       setState("selecting");
-      setSelection(undefined);
+      setSelection(""); // Reset selection state when a new selection starts
     };
 
     const handleMouseUp = () => {
@@ -21,7 +23,7 @@ export const SelectMenu = () => {
       const text = activeSelection.toString();
       if (!text) {
         setState("ready");
-        setSelection(undefined);
+        setSelection(""); // Reset if no text is selected
         return;
       }
 
@@ -46,28 +48,78 @@ export const SelectMenu = () => {
   }, []);
 
   const openPopup = () => {
-    setIsPopupOpen(true);
-    console.log(isPopupOpen);
+    setIsPopupOpen(true); // Open the note popup
   };
 
   const closePopup = () => {
-    setIsPopupOpen(false);
+    setIsPopupOpen(false); // Close the note popup
   };
 
-  const highlightText = (color) => {
+  const handleHighlightClick = (button, color) => {
+    // Position the menu based on the button's position
+    const rect = button.getBoundingClientRect();
+    setPosition({
+      x: rect.left + rect.width / 2 - 180 / 2,
+      y: rect.top + window.scrollY - 45,
+      width: rect.width,
+      height: rect.height,
+    });
+
+    // Save the button in the state
+    setClickedHighlight(button); // Save the button element
+
+    setSelection(button.textContent); // Update the selection text
+    setState("selected"); // Set state to selected
+
+    // Apply the color change immediately
+    if (button) {
+      // Log the button directly
+      console.log("button clicked is", button);
+      button.className = `highlight-${color}`; // Apply the color change immediately
+    }
+  };
+
+  const highlightText = (color, button = null) => {
+    if (button) {
+      console.log("button clicked");
+
+      // Directly apply color change to the clicked button
+      button.className = `highlight-${color}`;
+      return; // Exit early after applying the color change
+    }
+
+    // If no button is passed, handle new text selection
     const selection = window.getSelection();
     if (!selection.rangeCount) return;
 
     const range = selection.getRangeAt(0);
-    const span = document.createElement("span");
+    const selectedText = range.toString();
 
+    if (!selectedText.trim()) return; // Ensure there's valid text
+
+    // Create a new button for the highlighted text
+    const span = document.createElement("button");
+    const uniqueId = `highlight-${Date.now()}-${Math.random()
+      .toString(36)
+      .substr(2, 9)}`;
+    span.id = uniqueId;
     span.className = `highlight-${color}`;
-    span.textContent = range.toString();
+    span.textContent = selectedText;
+
+    // Add an event listener to this button
+    span.addEventListener("click", () => handleHighlightClick(span, color));
 
     range.deleteContents();
     range.insertNode(span);
-    setSelection(""); // Reset the selection state
-    setState("ready"); // Reset the state to "ready"
+
+    // Track the new highlight in state
+    setHighlights((prev) => [
+      ...prev,
+      { id: uniqueId, color: color, text: selectedText },
+    ]);
+
+    setSelection(""); // Reset selection
+    setState("ready"); // Reset state to ready
   };
 
   return (
@@ -81,23 +133,23 @@ export const SelectMenu = () => {
           after:absolute after:top-full after:left-1/2 after:-translate-x-2 after:h-0 after:w-0 after:border-x-[6px] after:border-x-transparent after:border-b-[8px] after:border-b-black after:rotate-180"
         >
           <button
-            onClick={() => highlightText("red")}
+            onClick={() => highlightText("red", highlightedButton)}
             className="w-[20px] h-[20px] highlight_colors red bg-red-700 rounded-full"
           ></button>
           <button
-            onClick={() => highlightText("orange")}
+            onClick={() => highlightText("orange", highlightedButton)}
             className="w-[20px] h-[20px] highlight_colors bg-orange-600 rounded-full"
           ></button>
           <button
-            onClick={() => highlightText("yellow")}
+            onClick={() => highlightText("yellow", highlightedButton)}
             className="w-[20px] h-[20px] highlight_colors bg-yellow-400 rounded-full"
           ></button>
           <button
-            onClick={() => highlightText("blue")}
+            onClick={() => highlightText("blue", highlightedButton)}
             className="w-[20px] h-[20px] highlight_colors bg-blue-500 rounded-full"
           ></button>
           <button
-            onClick={() => highlightText("green")}
+            onClick={() => highlightText("green", highlightedButton)}
             className="w-[20px] h-[20px] highlight_colors bg-green-600 rounded-full"
           ></button>
           <button onClick={openPopup}>
@@ -125,7 +177,7 @@ export const SelectMenu = () => {
               <button
                 onClick={() => {
                   closePopup();
-                  highlightText("orange");
+                  highlightText("orange"); // Save note with orange highlight
                 }}
                 className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
               >
