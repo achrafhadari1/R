@@ -39,6 +39,9 @@ header {
 footer {
   display: none;
 }
+.dcr-fckw05 ,.dcr-1fnjjtg/* for guardian */ {
+  display: none;
+}
 [class*="offer"],
 [id*="Banner"],
 [id*="offer"],
@@ -48,7 +51,6 @@ footer {
 [id*="_ad"],
 [class*="_ad"],
 [id*="-ad"],
-[class*="-ad"],
 [id*="badge"],
 [class*="-share"],
 [class*="share_"],
@@ -127,3 +129,9 @@ div[data-component="tags"] {
   text-decoration-color: green;
 }
 /* Add similar classes for other colors */
+button[class^="highlight-"] {
+  all: unset; /* Resets inherited button styles */
+  display: inline;
+  background: transparent; /* Ensures background doesn't block text styles */
+  cursor: pointer;
+}

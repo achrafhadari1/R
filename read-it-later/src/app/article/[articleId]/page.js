@@ -17,10 +17,11 @@ export default function Article() {
   const [date, setDate] = useState("");
   const [id, title] = articleId.split("+"); // Split into ID and title
   const [domain, setdomain] = useState("");
+  const [articleContent, setArticleContent] = useState(""); // Initialize content state
+
   useEffect(() => {
     const token = getCookie("token");
     if (id) {
-      // Ensure ID exists before proceeding
       AxiosInstance.get(`/articles/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -28,22 +29,22 @@ export default function Article() {
       }) // Fetch article data by ID
         .then((response) => {
           setArticle(response.data.article);
-          // Update state with fetched article
           if (response.data.article.date_published) {
             const formattedDate = format(
-              new Date(response.data.article.date_published), // Access date_published from the response data
+              new Date(response.data.article.date_published),
               "MMM do, yyyy h:mm a"
             );
             setDate(formattedDate);
           }
-
           setdomain(getMainDomain(response.data.article.domain));
+          setArticleContent(response.data.article.content); // Set initial article content
         })
         .catch((error) => {
           console.error(error); // Handle any errors
         });
     }
-  }, [id]); // Re-run effect when ID changes
+  }, [id]);
+
   const getMainDomain = (domain) => {
     if (!domain) return "";
     return domain
@@ -51,6 +52,30 @@ export default function Article() {
       .replace(/\.[a-z]{2,}$/i, "")
       .toUpperCase();
   };
+
+  const saveArticleChanges = async () => {
+    const token = getCookie("token");
+    const data = {
+      title: article.title,
+      content: articleContent, // Updated content with highlights
+      lead_image: article.lead_image,
+      date_published: article.date_published,
+      author: article.author,
+      domain: article.domain,
+    };
+
+    try {
+      const response = await AxiosInstance.put(`/articles/${id}`, data, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      console.log("Article updated successfully", response.data);
+    } catch (error) {
+      console.error("Error updating article", error);
+    }
+  };
+
   if (!article)
     return (
       <div className="mt-10 articleConta flex w-4/5 m-auto flex-col">
@@ -99,9 +124,12 @@ export default function Article() {
 
           <div
             className="text-3xl article_content relative"
-            dangerouslySetInnerHTML={{ __html: article.content }}
+            dangerouslySetInnerHTML={{ __html: articleContent }}
           />
-          <SelectMenu />
+          <SelectMenu
+            setArticleContent={setArticleContent} // Pass the setArticleContent function to SelectMenu
+            articleContent={articleContent} // Pass the current content as a prop
+          />
         </div>
       )}
     </div>

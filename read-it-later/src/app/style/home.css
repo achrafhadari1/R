@@ -46,8 +46,9 @@
   font-weight: 700;
   font-style: normal;
   height: 7rem;
-  font-size: 1.2rem;
+  font-size: 1.3rem;
   transition: 0.2s ease-in-out;
+  margin-bottom: 1rem;
 }
 .title-article-home-bottom {
   height: 3rem;
