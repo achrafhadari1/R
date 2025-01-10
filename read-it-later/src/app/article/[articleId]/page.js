@@ -53,11 +53,11 @@ export default function Article() {
       .toUpperCase();
   };
 
-  const saveArticleChanges = async () => {
+  const saveArticleChanges = async (updatedContent) => {
     const token = getCookie("token");
     const data = {
       title: article.title,
-      content: articleContent, // Updated content with highlights
+      content: updatedContent || articleContent, // Updated content or current content
       lead_image: article.lead_image,
       date_published: article.date_published,
       author: article.author,
@@ -71,6 +71,7 @@ export default function Article() {
         },
       });
       console.log("Article updated successfully", response.data);
+      setArticleContent(updatedContent); // Update local content state
     } catch (error) {
       console.error("Error updating article", error);
     }
@@ -127,8 +128,10 @@ export default function Article() {
             dangerouslySetInnerHTML={{ __html: articleContent }}
           />
           <SelectMenu
-            setArticleContent={setArticleContent} // Pass the setArticleContent function to SelectMenu
-            articleContent={articleContent} // Pass the current content as a prop
+            articleContent={articleContent}
+            setArticleContent={setArticleContent}
+            saveArticleChanges={saveArticleChanges}
+            articleId={id}
           />
         </div>
       )}

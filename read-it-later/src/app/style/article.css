@@ -102,31 +102,31 @@ div[data-component="tags"] {
 }
 .highlight-red {
   background-color: rgba(185, 28, 28, 0.3) !important;
-  text-decoration: underline;
-  text-decoration-color: rgb(185, 28, 28);
+  text-decoration: underline !important;
+  text-decoration-color: rgb(185, 28, 28) !important;
 }
 
 .highlight-orange {
   background-color: rgba(255, 165, 0, 0.3) !important;
-  text-decoration: underline;
-  text-decoration-color: orange;
+  text-decoration: underline !important;
+  text-decoration-color: orange !important;
 }
 .highlight-yellow {
   background-color: rgba(255, 255, 0, 0.3) !important;
-  text-decoration: underline;
-  text-decoration-color: yellow;
+  text-decoration: underline !important;
+  text-decoration-color: yellow !important;
 }
 
 .highlight-blue {
   background-color: rgba(30, 144, 255, 0.3) !important;
-  text-decoration: underline;
-  text-decoration-color: blue;
+  text-decoration: underline !important;
+  text-decoration-color: blue !important;
 }
 
 .highlight-green {
   background-color: rgba(34, 139, 34, 0.3) !important;
-  text-decoration: underline;
-  text-decoration-color: green;
+  text-decoration: underline !important;
+  text-decoration-color: green !important;
 }
 /* Add similar classes for other colors */
 button[class^="highlight-"] {
@@ -134,4 +134,11 @@ button[class^="highlight-"] {
   display: inline;
   background: transparent; /* Ensures background doesn't block text styles */
   cursor: pointer;
+}
+div[data-sara-component] {
+  display: none;
+}
+/* #spiegel-logo */
+#vector-fc20cdf1-92af-4ea7-a691-770f9ec9929f {
+  display: none;
 }

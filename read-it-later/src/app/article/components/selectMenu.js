@@ -1,8 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { CiStickyNote } from "react-icons/ci";
 import { Textarea } from "@/components/ui/textarea";
-
-export const SelectMenu = () => {
+import { useCallback } from "react";
+import { getCookie } from "cookies-next";
+import { v4 as uuidv4 } from "uuid";
+import AxiosInstance from "@/lib/axiosInstance";
+export const SelectMenu = ({
+  saveArticleChanges,
+  articleContent,
+  articleId,
+}) => {
   const [selection, setSelection] = useState(""); // The selected text
   const [position, setPosition] = useState(null); // Menu position
   const [clickedHighlight, setClickedHighlight] = useState(null); // Currently clicked highlight
@@ -42,13 +49,18 @@ export const SelectMenu = () => {
       x: rect.left + rect.width / 2 - 90, // Center the menu
       y: rect.top + window.scrollY - 45, // Position above the button
     });
+    console.log("button clicked");
     setClickedHighlight(button); // Save the clicked highlight
     setSelection(button.textContent); // Display the text in the menu
   };
   const handleColorChange = (color) => {
     if (clickedHighlight) {
-      clickedHighlight.className = `highlight-${color}`;
+      clickedHighlight.className = `highlight-button  highlight-${color}`;
       setClickedHighlight(null);
+      setPosition(null);
+      const updatedContent =
+        document.querySelector(".article_content").innerHTML;
+      saveArticleChanges(updatedContent);
     } else {
       const selection = window.getSelection();
       if (!selection.rangeCount) return;
@@ -59,7 +71,9 @@ export const SelectMenu = () => {
       if (!selectedText.trim()) return;
 
       const button = document.createElement("button");
-      button.className = `highlight-${color}`;
+      const uniqueId = uuidv4(); // Generate a unique UUID
+      button.id = `highlight-${uniqueId}`; // Assign the unique ID to the button
+      button.className = `highlight-button highlight-${color}`;
       button.textContent = selectedText;
 
       const span = document.createElement("span");
@@ -68,7 +82,6 @@ export const SelectMenu = () => {
       );
       span.style.fontWeight = computedStyle.fontWeight;
       span.style.fontStyle = computedStyle.fontStyle;
-      span.style.textDecoration = computedStyle.textDecoration;
 
       span.appendChild(button);
       button.addEventListener("click", () => handleHighlightClick(button));
@@ -76,16 +89,57 @@ export const SelectMenu = () => {
       range.deleteContents();
       range.insertNode(span);
 
+      const updatedContent =
+        document.querySelector(".article_content").innerHTML;
       setSelection("");
       setPosition(null);
 
-      // Update the article content in parent (Article.js)
-      setArticleContent((prevContent) => {
-        const newContent = prevContent.replace(selectedText, span.outerHTML);
-        return newContent;
-      });
+      // Call saveArticleChanges
+      saveArticleChanges(updatedContent);
+      saveHighlight(color, selectedText, articleId);
     }
   };
+  const saveHighlight = async (color, text, articleId) => {
+    try {
+      const token = getCookie("token");
+      const response = AxiosInstance.post(
+        `/articles/${articleId}/highlights`,
+        {
+          highlighted_text: text,
+          color: color,
+          note: "",
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.ok) {
+        const savedHighlight = await response.json();
+        console.log("Highlight saved:", savedHighlight);
+      } else {
+        console.error("Failed to save highlight", response.statusText);
+      }
+    } catch (error) {
+      console.error("Error saving highlight:", error);
+    }
+  };
+
+  useEffect(() => {
+    const buttons = document.querySelectorAll(".highlight-button"); // Class of your buttons
+    buttons.forEach((button) => {
+      button.addEventListener("click", () => handleHighlightClick(button));
+    });
+
+    return () => {
+      // Clean up listeners to prevent duplicates
+      buttons.forEach((button) => {
+        button.removeEventListener("click", () => handleHighlightClick(button));
+      });
+    };
+  }, [articleContent]); // Re-run effect whenever `articleContent` changes
 
   return (
     <div>
