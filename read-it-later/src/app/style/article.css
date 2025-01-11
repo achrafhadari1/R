@@ -53,8 +53,10 @@ footer {
 [id*="-ad"],
 [id*="badge"],
 [class*="-share"],
+[class*="advertisement"],
 [class*="share_"],
 [class*="_share"],
+[class*="footer"],
 [class*="share-"] {
   display: none;
 }
@@ -140,5 +142,74 @@ div[data-sara-component] {
 }
 /* #spiegel-logo */
 #vector-fc20cdf1-92af-4ea7-a691-770f9ec9929f {
+  display: none;
+}
+.note-icon {
+  width: 20px;
+  display: inline !important;
+}
+.note-icon svg {
+  display: inline !important;
+  width: 20px;
+  height: 15px;
+}
+h2 {
+  font-size: 32px;
+  line-height: 1.125em;
+  margin: 16px 0px;
+  margin-top: 16px;
+  color: rgb(26, 26, 26);
+  font-weight: 600;
+}
+.recirc-most-popular-wrapper {
+  display: none;
+}
+hr {
+  border: 0px;
+  background: rgb(204, 204, 204);
+  height: 2px;
+  clear: both;
+  margin: 40px auto;
+}
+[class*="ActionBarWrapperContent"] {
+  display: none;
+}
+#goog_520105806,
+.gv-7n-iwW-dockWrapper {
+  display: none !important;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0;
+  font-size: 18px;
+  text-align: left;
+}
+.article_content svg:not(.note-icon svg) {
+  display: none !important;
+}
+th,
+td {
+  border: 1px solid #dddddd;
+  padding: 12px;
+}
+
+th {
+  background-color: #f4f4f4;
+  color: #333;
+  font-weight: bold;
+}
+
+tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+tr:hover {
+  background-color: #f1f1f1;
+  cursor: pointer;
+}
+/* dw */
+
+.s75t7t0 {
   display: none;
 }

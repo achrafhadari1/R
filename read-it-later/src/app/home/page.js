@@ -6,6 +6,8 @@ import { ArticleContainerGrid } from "./components/ArticleContainerGrid";
 import AxiosInstance from "../../lib/axiosInstance";
 import { getCookie } from "cookies-next";
 import { format } from "date-fns";
+import { Skeleton } from "@/components/ui/skeleton";
+
 import {
   SidebarInset,
   SidebarProvider,
@@ -101,7 +103,30 @@ export default function Home() {
                 );
               })
             ) : (
-              <p>no posts</p>
+              <div className="ml-12 flex-wrap mt-2 flex gap-3 div2home">
+                <div className="relative w-64 flex flex-col gap-3 ArticleContainerSingle">
+                  {/* Skeleton for lead image */}
+                  <Skeleton className="h-48 object-cover rounded-xl mb-7" />
+
+                  {/* Skeleton for text section */}
+                  <div className="space-y-2">
+                    <Skeleton className="h-4 w-1/3 mb-2" />
+                  </div>
+
+                  {/* Skeleton for title */}
+                  <Skeleton className="h-4 w-2/4 mb-7" />
+
+                  {/* Skeleton for article actions and metadata */}
+                  <div className="flex justify-between items-center space-y-2">
+                    <div className="flex gap-4">
+                      <Skeleton className="h-6 w-6 rounded-full" />
+                      <Skeleton className="h-6 w-6 rounded-full" />
+                      <Skeleton className="h-6 w-6 rounded-full" />
+                    </div>
+                    <Skeleton className="h-4 w-20" />
+                  </div>
+                </div>
+              </div>
             )}
             <AddArticle refreshArticles={refreshArticles} />
           </div>

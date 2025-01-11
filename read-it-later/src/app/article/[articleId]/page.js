@@ -82,11 +82,11 @@ export default function Article() {
       <div className="mt-10 articleConta flex w-4/5 m-auto flex-col">
         <div className="space-y-2">
           {" "}
-          <Skeleton className="h-20  w-2/4 mb-7 " />
+          <Skeleton className="h-12  w-2/4 mb-7 " />
         </div>
         <Skeleton className="h-[500px] rounded-xl mb-7" />
         <div className="space-y-2">
-          <Skeleton className="h-4 w-1/3 mb-7" />
+          <Skeleton className="h-6 w-1/3 mb-7" />
         </div>
         <div className="space-y-2">
           <Skeleton className="h-4 w-full" />

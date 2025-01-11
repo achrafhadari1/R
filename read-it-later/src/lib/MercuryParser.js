@@ -17,7 +17,7 @@ export async function parseArticle(url) {
 
     // Step 3: Combine results from both sources
     const combinedResult = {
-      title: puppeteerResult.title || mercuryResult.title,
+      title: mercuryResult.title || puppeteerResult.title,
       lead_image_url:
         mercuryResult.lead_image_url ||
         puppeteerResult.lead_image_url ||

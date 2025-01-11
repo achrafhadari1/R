@@ -57,5 +57,39 @@ public function deleteHighlight($highlightId)
 
     return response()->json(['message' => 'Highlight deleted successfully.']);
 }
+public function getHighlight($highlightId)
+{
+    // Fetch the highlight by ID
+    $highlight = Highlight::findOrFail($highlightId);
+
+    // Return the highlight in JSON format
+    return response()->json($highlight, 200);
+}
+
+public function updateNote(Request $request, $highlightId)
+{
+    // Validate the incoming request
+    $request->validate([
+        'note' => 'required|string', // Ensure the note field is provided and is a string
+    ]);
+
+    // Fetch the highlight by ID
+    $highlight = Highlight::findOrFail($highlightId);
+
+    // Check if the authenticated user is the one who created the highlight
+    if ($highlight->user_id !== auth()->user()->id) {
+        return response()->json(['error' => 'You are not authorized to update this note.'], 403);
+    }
+
+    // Update the note field
+    $highlight->note = $request->input('note');
+
+    // Save the changes
+    $highlight->save();
+
+    // Return the updated highlight
+    return response()->json($highlight, 200);
+}
+
 
 }

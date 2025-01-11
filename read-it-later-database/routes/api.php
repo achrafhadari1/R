@@ -25,3 +25,5 @@ Route::get('/articles/{articleId}/highlights', [HighlightController::class, 'get
 Route::delete('/highlights/{highlightId}', [HighlightController::class, 'deleteHighlight'])->middleware('auth:sanctum');
 
 
+Route::get('articles/highlights/{highlightId}', [HighlightController::class, 'getHighlight']);
+Route::put('articles/highlights/{highlightId}/note', [HighlightController::class, 'updateNote'])->middleware('auth:sanctum');
