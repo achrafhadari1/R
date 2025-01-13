@@ -1,26 +1,40 @@
 import { NextResponse } from "next/server";
-import { NextRequest } from "next/server";
-import { cookies } from "next/headers"; // Import `cookies` to read cookies on the server
 
 // Middleware to protect routes
 export function middleware(request) {
   // Get the token from cookies
   const token = request.cookies.get("token")?.value; // This will access the cookies sent with the request
 
-  // If no token is found and the user is trying to access a protected route
-  if (!token && request.nextUrl.pathname.startsWith("/home")) {
-    return NextResponse.redirect(new URL("/register", request.url)); // Redirect to login page
+  const { pathname } = request.nextUrl; // Get the pathname for simplicity
+
+  // Redirect unauthenticated users trying to access protected routes
+  if (!token && pathname.startsWith("/home")) {
+    return NextResponse.redirect(new URL("/register", request.url));
   }
 
-  if (!token && request.nextUrl.pathname.startsWith("/articles")) {
-    return NextResponse.redirect(new URL("/login", request.url)); // Redirect to register page
+  // Redirect authenticated users from root ("/") to "/home"
+  if (token && pathname === "/") {
+    return NextResponse.redirect(new URL("/home", request.url));
   }
 
-  // If the user is authenticated, continue to the requested page
+  // Redirect authenticated users trying to access login or register pages
+  if (
+    token &&
+    (pathname.startsWith("/login") || pathname.startsWith("/register"))
+  ) {
+    return NextResponse.redirect(new URL("/home", request.url));
+  }
+
+  // Redirect unauthenticated users trying to access articles
+  if (!token && pathname.startsWith("/articles")) {
+    return NextResponse.redirect(new URL("/login", request.url));
+  }
+
+  // Allow access to the requested page if no conditions match
   return NextResponse.next();
 }
 
 // Define which paths to apply the middleware to
 export const config = {
-  matcher: ["/home", "/articles"], // Add other protected paths here
+  matcher: ["/home", "/articles", "/login", "/register", "/"], // Add other protected paths here
 };

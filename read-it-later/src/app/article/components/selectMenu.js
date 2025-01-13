@@ -19,8 +19,16 @@ export const SelectMenu = ({
   const [savedSelectionRange, setSavedSelectionRange] = useState(null); // Save the selection range
   useEffect(() => {
     const handleMouseUp = () => {
-      const activeSelection = document.getSelection();
-      if (!activeSelection || !activeSelection.rangeCount) {
+      const targetElement = document.querySelector(".articleConta");
+      if (!targetElement) return; // Ensure the target element exists
+
+      // Get the selection
+      const activeSelection = window.getSelection();
+      if (
+        !activeSelection ||
+        !activeSelection.rangeCount ||
+        !targetElement.contains(activeSelection.anchorNode)
+      ) {
         setPosition(null);
         setSelection("");
         return;
@@ -28,19 +36,27 @@ export const SelectMenu = ({
 
       const selectedText = activeSelection.toString().trim();
       if (selectedText) {
-        const rect = activeSelection.getRangeAt(0).getBoundingClientRect();
+        const range = activeSelection.getRangeAt(0);
+        const rect = range.getBoundingClientRect();
+
         setSelection(selectedText);
         setPosition({
           x: rect.left + rect.width / 2 - 90, // Center the menu
           y: rect.top + window.scrollY - 45, // Position above the selection
         });
-        setSavedSelectionRange(activeSelection.getRangeAt(0).cloneRange());
+        setSavedSelectionRange(range.cloneRange());
       }
     };
 
-    document.addEventListener("mouseup", handleMouseUp);
+    const targetElement = document.querySelector(".articleConta");
+    if (targetElement) {
+      targetElement.addEventListener("mouseup", handleMouseUp);
+    }
+
     return () => {
-      document.removeEventListener("mouseup", handleMouseUp);
+      if (targetElement) {
+        targetElement.removeEventListener("mouseup", handleMouseUp);
+      }
     };
   }, []);
 
@@ -248,7 +264,7 @@ export const SelectMenu = ({
       setSelection("");
       setPosition(null);
       setIsPopupOpen(false);
-
+      setState("");
       return; // Exit since we're updating, not creating
     }
     const selection = window.getSelection();

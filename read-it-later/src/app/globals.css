@@ -61,3 +61,6 @@ body {
 .error {
   color: rgb(129, 12, 12);
 }
+.z-index-top {
+  z-index: 999999999;
+}

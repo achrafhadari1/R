@@ -23,6 +23,7 @@ import {
 } from "@/components/ui/breadcrumb";
 import { Separator } from "@/components/ui/separator";
 import { AppSidebar } from "@/components/app-sidebar";
+import { AddFeed } from "./components/addFeed";
 export default function Home() {
   const [articles, setArticles] = useState([]);
   // Fetch articles when the component mounts
@@ -35,8 +36,12 @@ export default function Home() {
       },
     })
       .then((response) => {
-        console.log(response.data); // Process the response data
-        setArticles(response.data); // Update state with fetched articles
+        const filteredArticles = response.data.filter(
+          (article) => article.is_from_feed === 0
+        );
+
+        console.log(filteredArticles); // Log the filtered articles
+        setArticles(filteredArticles);
       })
       .catch((error) => {
         console.error(error); // Handle any errors
@@ -78,13 +83,13 @@ export default function Home() {
           </Breadcrumb>
         </header>
         <div className="home-container">
-          <div className="ml-4 flex-wrap mt-2 flex div2home">
+          <div className="ml-12 gap-2 flex-wrap mt-2 flex div2home">
             {articles.length > 0 ? (
               articles.map((article) => {
                 // Format the date_published before passing it as a prop
                 const formattedDate = format(
                   new Date(article.date_published),
-                  "MMM do, yyyy h:mm a"
+                  "MMM do, yyyy "
                 );
 
                 return (

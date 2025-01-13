@@ -52,8 +52,8 @@ export const ArticleContainerGrid = ({
           <img className="w-8" src="/arrow-up-right-svgrepo-com.svg" alt="" />
         </div>
       </div>
-      <div className=" p-4 text-xs h-8">
-        By {author || mainDomain.toUpperCase()} , {date_published}
+      <div className=" p-4 text-sm h-8">
+        {author || mainDomain.toUpperCase()}
       </div>
       <div className="p-4 title-article-home">{title}</div>
       <div className="p-4 flex justify-between title-article-home-bottom">
@@ -71,7 +71,7 @@ export const ArticleContainerGrid = ({
           <DeleteArticle refreshArticles={refreshArticles} id={id} />
         </div>
 
-        <div className="self-center">{readingTime} Minutes</div>
+        <div className="self-center">{readingTime} min</div>
       </div>
     </div>
   );

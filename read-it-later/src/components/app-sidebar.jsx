@@ -3,6 +3,9 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { SearchForm } from "@/components/search-form";
 import { usePathname } from "next/navigation";
+import { useContext } from "react";
+import { AppContext } from "../app/Context/AppContext";
+import AxiosInstance from "@/lib/axiosInstance";
 import {
   Sidebar,
   SidebarContent,
@@ -17,51 +20,98 @@ import {
   SidebarRail,
 } from "@/components/ui/sidebar";
 import { NavUser } from "@/components/nav-user";
-const data = {
-  navMain: [
+import { AddFeed } from "@/app/home/components/addFeed";
+import { getCookie } from "cookies-next";
+
+export function AppSidebar({ ...props }) {
+  const { user, loading } = useContext(AppContext);
+  const router = useRouter();
+  const pathname = usePathname();
+  const [activePath, setActivePath] = useState("");
+  const [feeds, setFeeds] = useState([]);
+
+  useEffect(() => {
+    const fetchFeeds = async () => {
+      try {
+        const token = getCookie("token");
+        const response = await AxiosInstance.get("/feeds", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        const fetchedFeeds = response.data.map((feed) => ({
+          id: feed.id,
+          title: feed.feed_url, // Displayed title
+          // Dynamic link
+        }));
+
+        setFeeds(fetchedFeeds); // Store feeds in state
+        console.log(fetchedFeeds);
+      } catch (error) {
+        console.error("Error fetching feeds:", error);
+      }
+    };
+
+    fetchFeeds();
+    console.log(feeds);
+  }, []);
+
+  useEffect(() => {
+    // Update active path when pathname changes
+    setActivePath(pathname);
+  }, [pathname]);
+
+  const navMain = [
     {
       title: "Home",
       url: "/",
       items: [
-        { title: "Articles", url: "/home" },
-        { title: "Archived Articles", url: "/archived-articles" },
-        { title: "Highlights", url: "/highlights" },
+        { title: "Articles", url: "/home", key: "001" },
+        { title: "Archived Articles", url: "/archived-articles", key: "002" },
+        { title: "Highlights", url: "/highlights", key: "003" },
       ],
     },
     {
-      title: "Feeds",
+      title: (
+        <div className="flex items-center justify-between w-full">
+          Feeds <AddFeed />
+        </div>
+      ),
       url: "/feeds",
-      items: [{ title: "Bild", url: "/feeds/bild" }],
+      items: feeds.map((feed) => ({
+        key: feed.id, // Unique key for each feed
+        title: feed.title, // Feed title
+        url: `/feed/${user.id}/${feed.id}`, // Feed URL with user ID and feed ID
+      })),
     },
     {
       title: "Settings",
       url: "/settings",
       items: [
-        { title: "Add Feeds", url: "/settings/add-feeds" },
-        { title: "File Conventions", url: "/settings/file-conventions" },
+        {
+          title: "File Conventions",
+          url: "/settings/file-conventions",
+          key: "004",
+        },
       ],
     },
-  ],
-};
+  ];
 
-export function AppSidebar({ ...props }) {
-  const router = useRouter();
-  const pathname = usePathname();
-  const [ActivePath, setActivePath] = useState("");
-  useEffect(() => {
-    // Update active path when pathname changes
-    setActivePath(pathname);
-  }, [pathname]);
   return (
     <Sidebar {...props}>
       <SidebarHeader>
-        <div className="text-center">LOGO</div>
+        <div className="flex justify-center text-center">
+          <img className="w-32 h-16 object-cover" src="/logo-2.svg" alt="" />
+        </div>
         <SearchForm />
       </SidebarHeader>
       <SidebarContent>
-        {data.navMain.map((group) => (
+        {navMain.map((group) => (
           <SidebarGroup key={group.title}>
-            <SidebarGroupLabel>{group.title}</SidebarGroupLabel>
+            <SidebarGroupLabel>
+              {group.title /* This now supports JSX */}
+            </SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu>
                 {group.items.map((item) => {
@@ -69,7 +119,7 @@ export function AppSidebar({ ...props }) {
                   const isActive = pathname === item.url;
 
                   return (
-                    <SidebarMenuItem key={item.title}>
+                    <SidebarMenuItem key={item.key}>
                       <SidebarMenuButton asChild isActive={isActive}>
                         <a href={item.url}>{item.title}</a>
                       </SidebarMenuButton>
@@ -81,9 +131,7 @@ export function AppSidebar({ ...props }) {
           </SidebarGroup>
         ))}
       </SidebarContent>
-      <SidebarFooter>
-        <NavUser user={data.user} />
-      </SidebarFooter>
+      <SidebarFooter>{user && <NavUser user={user} />}</SidebarFooter>
       <SidebarRail />
     </Sidebar>
   );

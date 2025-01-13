@@ -213,3 +213,9 @@ tr:hover {
 .s75t7t0 {
   display: none;
 }
+.article-highlight-navbar-tiny-thing-color {
+  width: 4px;
+  height: 28px;
+  border-radius: 44px;
+  margin-left: 0.5rem;
+}

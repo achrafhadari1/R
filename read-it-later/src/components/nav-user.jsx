@@ -120,7 +120,7 @@ export function NavUser() {
                   </div>
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuGroup>
+                <DropdownMenuGroup className="z-index-top">
                   <DropdownMenuItem>
                     <Sparkles />
                     Themes

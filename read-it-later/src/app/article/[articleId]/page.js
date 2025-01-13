@@ -108,7 +108,7 @@ export default function Article() {
     >
       {article && (
         <div className="  w-full">
-          <Navbar id={id} />
+          <Navbar id={id} articleContent={articleContent} />
           <h2 className="article_header">{article.title}</h2>
 
           <img

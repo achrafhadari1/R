@@ -20,6 +20,7 @@ export function RegisterForm({ className, ...props }) {
   const router = useRouter();
   async function handleRegister(e) {
     e.preventDefault(); // Prevent form submission
+
     try {
       // Make the API call
       const axiosResponse = await AxiosInstance.post("/register", formData);
