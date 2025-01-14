@@ -29,7 +29,8 @@ export function AppSidebar({ ...props }) {
   const pathname = usePathname();
   const [activePath, setActivePath] = useState("");
   const [feeds, setFeeds] = useState([]);
-
+  const [progress, setProgress] = useState(0);
+  const [disabledFeedId, setDisabledFeedId] = useState(null);
   useEffect(() => {
     const fetchFeeds = async () => {
       try {
@@ -56,7 +57,26 @@ export function AppSidebar({ ...props }) {
     fetchFeeds();
     console.log(feeds);
   }, []);
+  const refreshFeed = async () => {
+    try {
+      const token = getCookie("token");
+      const response = await AxiosInstance.get("/feeds", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
+      const fetchedFeeds = response.data.map((feed) => ({
+        id: feed.id,
+        title: feed.feed_url, // Displayed title
+        // Dynamic link
+      }));
+
+      setFeeds(fetchedFeeds); // Store feeds in state
+    } catch (error) {
+      console.error("Error fetching feeds:", error);
+    }
+  };
   useEffect(() => {
     // Update active path when pathname changes
     setActivePath(pathname);
@@ -75,16 +95,36 @@ export function AppSidebar({ ...props }) {
     {
       title: (
         <div className="flex items-center justify-between w-full">
-          Feeds <AddFeed />
+          Feeds{" "}
+          <AddFeed
+            refreshFeed={refreshFeed}
+            setProgress={setProgress}
+            setDisabledFeedId={setDisabledFeedId}
+          />
         </div>
       ),
       url: "/feeds",
       items: feeds.map((feed) => ({
         key: feed.id, // Unique key for each feed
-        title: feed.title, // Feed title
+        title: (
+          <div
+            className={`feed-item ${
+              disabledFeedId === feed.id ? "disabled" : ""
+            }`}
+            style={{
+              pointerEvents: disabledFeedId === feed.id ? "none" : "auto", // Disable interaction
+            }}
+          >
+            <span>{feed.title}</span>
+            {disabledFeedId === feed.id && (
+              <span className="loading-text disabled ">Processing...</span>
+            )}
+          </div>
+        ),
         url: `/feed/${user.id}/${feed.id}`, // Feed URL with user ID and feed ID
       })),
     },
+
     {
       title: "Settings",
       url: "/settings",

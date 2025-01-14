@@ -16,7 +16,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useState, useEffect } from "react";
 import AxiosInstance from "@/lib/axiosInstance";
-export const AddFeed = () => {
+export const AddFeed = ({ refreshFeed, setProgress, setDisabledFeedId }) => {
   const [feedUrl, setFeedUrl] = useState("");
   const [parsedArticles, setParsedArticles] = useState([]); // State to store parsed articles
   const [error, setError] = useState(null);
@@ -25,7 +25,8 @@ export const AddFeed = () => {
   const [loading, setLoading] = useState(false);
   const handleCompleteFeedProcess = async () => {
     try {
-      // Step 1: Add the feed
+      setProgress(0); // Set initial progress
+
       const token = getCookie("token");
       const addFeedResponse = await AxiosInstance.post(
         "/feeds",
@@ -40,22 +41,22 @@ export const AddFeed = () => {
       console.log("Feed added:", addFeedResponse.data);
       const newFeedId = addFeedResponse.data.id;
       setFeedId(newFeedId); // Update state
-
+      refreshFeed();
+      setProgress(20); // Set progress as 20% after feed added
+      setDisabledFeedId(newFeedId);
       // Step 2: Fetch the feed and parse RSS
       const proxyUrl =
         "https://api.allorigins.win/get?url=" + encodeURIComponent(feedUrl);
 
-      // Fetch the RSS feed using the proxy
       const fetchResponse = await fetch(proxyUrl);
-
       if (!fetchResponse.ok) {
         throw new Error(
           `Failed to fetch RSS feed: ${fetchResponse.statusText}`
         );
       }
 
-      const responseJson = await fetchResponse.json(); // The response is returned in JSON format from AllOrigins
-      const rssText = responseJson.contents; // Get the actual RSS content from the response JSON
+      const responseJson = await fetchResponse.json(); // Get the RSS content
+      const rssText = responseJson.contents;
 
       // Parse the RSS feed
       const parser = new DOMParser();
@@ -65,7 +66,7 @@ export const AddFeed = () => {
       const articles = Array.from(items).map((item) => ({
         link: item.querySelector("link")?.textContent || "No Link",
       }));
-      const links = articles.slice(0, 2).map((article) => article.link);
+      const links = articles.slice(0, 6).map((article) => article.link);
       console.log("Parsed Articles:", articles);
 
       // Step 3: Parse individual articles
@@ -99,6 +100,7 @@ export const AddFeed = () => {
       }
 
       // Step 4: Save parsed articles to the backend
+      setProgress(60); // Set progress to 60% while saving articles
       const saveArticlesResponse = await AxiosInstance.post(
         "/articles/saveArticlesFeed",
         {
@@ -114,10 +116,12 @@ export const AddFeed = () => {
 
       console.log("Articles saved:", saveArticlesResponse.data);
       setFeedUrl(""); // Reset input
+      setProgress(100); // Set progress to 100% after completing the process
     } catch (error) {
       console.error("Error in the feed process:", error);
       setError("Failed to complete feed process. Please try again.");
     } finally {
+      setDisabledFeedId(null); // Enable feed after process completes
       setLoading(false);
     }
   };

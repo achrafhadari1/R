@@ -219,3 +219,44 @@ tr:hover {
   border-radius: 44px;
   margin-left: 0.5rem;
 }
+
+/* substack */
+[class*="_subscribeDialog_"] {
+  position: initial !important;
+}
+.subscription-widget-wrap {
+  display: none;
+}
+[aria-label="View share options"] {
+  display: none;
+}
+.pc-reset {
+  text-decoration: unset;
+  list-style: none;
+}
+.pc-display-flex {
+  display: flex;
+}
+.pc-flexDirection-column {
+  flex-direction: column;
+}
+._mdSquare_1cl67_47._mdSquare_1cl67_47._mdSquare_1cl67_47._mdSquare_1cl67_47._mdSquare_1cl67_47 {
+  width: 140px;
+  height: 140px !important;
+  object-fit: cover;
+}
+._img_16u6n_1 {
+  display: flex;
+}
+.articleConta form {
+  display: none;
+}
+._signInLink_15pnt_57 {
+  display: none;
+}
+.jw-preview.jw-reset {
+  display: none;
+}
+[class*="jw"] {
+  display: none;
+}

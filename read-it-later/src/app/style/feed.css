@@ -1,0 +1,24 @@
+.article_feed_small_right {
+  height: 8rem;
+  width: 12rem;
+  object-fit: cover;
+  object-position: top right;
+}
+.title_article_small {
+  font-weight: 600;
+}
+.excerpt_article_small {
+  padding: 14px;
+  font-size: 14px;
+}
+@media only screen and (max-width: 1400px) {
+  .containerfeed {
+    width: 95% !important;
+  }
+  .image-left-width {
+    width: 65%;
+  }
+}
+.title_article_small {
+  padding: 14px;
+}
