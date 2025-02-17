@@ -2,7 +2,7 @@ import axios from "axios";
 
 const AxiosInstance = axios.create({
   baseURL: "http://127.0.0.1:8000/api", // The base URL for all API requests
-  timeout: 5000, // Default timeout for requests (in milliseconds)
+  timeout: 300000, // Default timeout for requests (in milliseconds)
   headers: {
     "Content-Type": "application/json", // Default headers for requests
   },

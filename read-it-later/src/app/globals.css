@@ -1,17 +1,60 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@100..900&display=swap");
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@font-face {
+  font-family: "Irvin-Heading";
+  src: url("https://db.onlinewebfonts.com/t/1e44faec07b8b81f60a3215d76bd0086.eot");
+  src: url("https://db.onlinewebfonts.com/t/1e44faec07b8b81f60a3215d76bd0086.eot?#iefix")
+      format("embedded-opentype"),
+    url("https://db.onlinewebfonts.com/t/1e44faec07b8b81f60a3215d76bd0086.woff2")
+      format("woff2"),
+    url("https://db.onlinewebfonts.com/t/1e44faec07b8b81f60a3215d76bd0086.woff")
+      format("woff"),
+    url("https://db.onlinewebfonts.com/t/1e44faec07b8b81f60a3215d76bd0086.ttf")
+      format("truetype"),
+    url("https://db.onlinewebfonts.com/t/1e44faec07b8b81f60a3215d76bd0086.svg#Irvin-Heading")
+      format("svg");
+}
 @font-face {
   font-family: "cheltenham";
-  src: url("/fonts/cheltenham/cheltenham-normal-300.ttf") format("truetype");
+  src: url("/fonts/newyorker/acaslonpro-regular.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "sumana";
+  src: url("/fonts/sumana/Sumana-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: "Latinaires";
+  src: url("/fonts/Latinaires/LatinairesPro-Regular.ttf") format("truetype");
   font-weight: 300;
   font-style: normal;
 }
 @font-face {
+  font-family: "Latinaires";
+  src: url("/fonts/Latinaires/LatinairesPro-SemiBoldItalic.ttf")
+    format("truetype");
+  font-weight: 700;
+  font-style: italic;
+}
+@font-face {
+  font-family: "Latinaires";
+  src: url("/fonts/Latinaires/LatinairesPro-SemiBold.ttf") format("truetype");
+  font-weight: 700;
+  font-style: normal;
+}
+
+@font-face {
   font-family: "cheltenham";
   src: url("/fonts/cheltenham/cheltenham-normal-700.ttf") format("truetype");
   font-weight: 700;
-  font-style: bold;
+  font-style: oblique;
 }
 @font-face {
   font-family: "cheltenham";
@@ -19,13 +62,40 @@
   font-weight: 400;
   font-style: italic;
 }
+.sumanafont {
+  font-family: "sumana";
+  font-weight: 400;
+  font-style: normal;
+}
+.ubuntu-regular {
+  font-family: "Roboto Slab", serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+}
 
+.ubuntu-medium {
+  font-family: "Roboto Slab", serif;
+  font-optical-sizing: auto;
+  font-weight: 500;
+  font-style: normal;
+}
+
+.ubuntu-bold {
+  font-family: "Ubuntu", serif;
+  font-weight: 700;
+  font-style: normal;
+}
 body {
   color: var(--background);
   background: var(--foreground);
   font-family: "cheltenham", Helvetica, sans-serif;
+  letter-spacing: 0.01em; /* Fine-tune spacing */
+  line-height: 1.2;
 }
-
+.red {
+  color: rgb(219, 51, 52);
+}
 @layer base {
   :root {
     --radius: 0.5rem;
@@ -63,4 +133,34 @@ body {
 }
 .z-index-top {
   z-index: 999999999;
+}
+.authorusw {
+  text-transform: none;
+  font-feature-settings: normal;
+  font-style: normal;
+  letter-spacing: normal;
+  font-family: "Irvin-Heading";
+  line-break: auto;
+  color: rgb(219, 51, 52);
+  line-height: 1.33333em;
+  font-size: 12px;
+  font-weight: 400;
+  overflow-wrap: normal;
+}
+.authorusw_title {
+  text-transform: none;
+  font-feature-settings: normal;
+  font-style: normal;
+  letter-spacing: normal;
+  font-family: "Irvin-Heading";
+  line-break: auto;
+  line-height: 1.33333em;
+  font-weight: 400;
+  overflow-wrap: normal;
+}
+.double-border {
+  border-bottom: 1px double #000000;
+  border-top: 1px double #000000;
+  padding-top: 2px;
+  padding-bottom: 2px;
 }

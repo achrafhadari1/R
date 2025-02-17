@@ -70,23 +70,24 @@ class ArticleController extends Controller implements HasMiddleware
      */
     public function update(Request $request, Article $article)
     {
-        Gate::authorize('modify',$article);
-        $articlefields =  $request->validate([
-            'title'=>'required|string',
-            'content'=>'required',
-            'lead_image'=>'nullable|string',
+        Gate::authorize('modify', $article);
+    
+        $articlefields = $request->validate([
+            'title' => 'required|string',
+            'content' => 'required',
+            'lead_image' => 'nullable|string',
             'date_published' => 'nullable|string',
             'author' => 'nullable|string|max:100',
-            'progress' => 'nullable|integer|min:0',
-            'url'=>'nullable|string',
+            'progress' => 'nullable|integer|min:0|max:100', // Track progress
+            'url' => 'nullable|string',
             'domain' => 'nullable|string',
             'excerpt' => 'nullable|string',
-            'word_count' => 'nullable|integer|min:0',    
-           ]);
-          $article->update($articlefields);
+            'word_count' => 'nullable|integer|min:0',
+        ]);
     
-          return ['article'=>$article, 'user'=> $article->user];
-
+        $article->update($articlefields);
+    
+        return ['article' => $article, 'user' => $article->user];
     }
 
     /**

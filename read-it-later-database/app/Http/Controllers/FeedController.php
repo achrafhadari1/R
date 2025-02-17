@@ -4,12 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\Feed;
 use Illuminate\Http\Request;
-
 class FeedController extends Controller
 {
     /**
      * Store a new RSS feed for the user.
      */
+
     public function store(Request $request)
     {
         $request->validate([
@@ -24,6 +24,7 @@ class FeedController extends Controller
         return response()->json($feed, 201);
     }
 
+
     /**
      * Fetch all feeds for the logged-in user.
      */
@@ -33,7 +34,19 @@ class FeedController extends Controller
 
         return response()->json($feeds);
     }
-
+    public function show($id)
+    {
+        $feed = Feed::where('user_id', auth()->id())
+                    ->where('id', $id)
+                    ->first();
+    
+        if (!$feed) {
+            return response()->json(['message' => 'Feed not found'], 404);
+        }
+    
+        return response()->json($feed);
+    }
+    
 
     public function getArticlesByFeedId($feedId)
 {
@@ -59,5 +72,22 @@ class FeedController extends Controller
 
         return response()->json(['message' => 'Feed deleted successfully']);
     }
+    public function update(Request $request, $id)
+{
+    $feed = Feed::where('user_id', auth()->id())->findOrFail($id);
+
+    // Validate incoming request
+    $request->validate([
+        'title' => 'nullable|string|max:255',
+        'description' => 'nullable|string',
+        'link' => 'nullable|string',
+    ]);
+
+    // Update the feed with provided data
+    $feed->update($request->only(['title', 'description', 'link']));
+
+    return response()->json(['message' => 'Feed updated successfully', 'feed' => $feed]);
+}
+
 }
 

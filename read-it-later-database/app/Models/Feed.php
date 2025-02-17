@@ -11,8 +11,7 @@ class Feed extends Model
     use HasFactory;
 
     // Allow mass assignment of these fields
-    protected $fillable = ['user_id', 'feed_url'];
-
+    protected $fillable = ['user_id', 'feed_url', 'title', 'description', 'link'];
     /**
      * Define the relationship to the User model.
      */

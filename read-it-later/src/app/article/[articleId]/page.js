@@ -1,6 +1,6 @@
 "use client"; // This makes the component a client component
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { SelectMenu } from "../components/selectMenu";
 import AxiosInstance from "../../../lib/axiosInstance";
 import { format } from "date-fns";
@@ -109,7 +109,7 @@ export default function Article() {
       {article && (
         <div className="  w-full">
           <Navbar id={id} articleContent={articleContent} />
-          <h2 className="article_header">{article.title}</h2>
+          <h2 className="article_header ">{article.title}</h2>
 
           <img
             src={article.lead_image || "default-image-url.jpg"} // Fallback in case `lead_image_url` is undefined
@@ -118,7 +118,7 @@ export default function Article() {
             style={{ maxWidth: "100%", height: "auto" }}
           />
           <div>
-            <div className="mt-8 mb-8">
+            <div className="red authorusw mt-8 mb-8">
               Written by {article.author || domain} on {date || "Unknown"}{" "}
             </div>
           </div>

@@ -34,5 +34,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/feeds', [FeedController::class, 'index']); // Get all feeds
     Route::post('/feeds', [FeedController::class, 'store']); // Add a new feed
     Route::delete('/feeds/{id}', [FeedController::class, 'destroy']); // Delete a feed
+    Route::put('/feeds/{id}', [FeedController::class, 'update']); // Update a feed
     Route::get('/feeds/{feedId}/articles', [FeedController::class, 'getArticlesByFeedId']);
+    Route::get('/feeds/{id}', [FeedController::class, 'show']); // Delete a feed
+
 });

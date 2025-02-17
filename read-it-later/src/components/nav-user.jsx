@@ -68,13 +68,13 @@ export function NavUser() {
               <DropdownMenuTrigger asChild>
                 <SidebarMenuButton
                   size="lg"
-                  className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+                  className="authorusw data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
                 >
                   <Avatar className="h-8 w-8 rounded-lg">
                     <AvatarImage
                       src={
                         user.avatar ||
-                        "https://upload.wikimedia.org/wikipedia/commons/0/0c/Freddie_Mercury_%281975_Elektra_publicity_photo%29.jpg"
+                        "https://previews.123rf.com/images/tiodwiyanto/tiodwiyanto2105/tiodwiyanto210500151/169446136-pixel-cat-image-vector-illustration-of-pixel-art.jpg"
                       }
                       alt={user.name || "User"}
                     />{" "}
@@ -98,18 +98,18 @@ export function NavUser() {
                 sideOffset={4}
               >
                 <DropdownMenuLabel className="p-0 font-normal">
-                  <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-                    <Avatar className="h-8 w-8 rounded-lg">
+                  <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm authorusw">
+                    <Avatar className="h-8 w-8 rounded-lg authorusw">
                       <AvatarImage
                         src={
                           user.avatar ||
-                          "https://upload.wikimedia.org/wikipedia/commons/0/0c/Freddie_Mercury_%281975_Elektra_publicity_photo%29.jpg"
+                          "https://previews.123rf.com/images/tiodwiyanto/tiodwiyanto2105/tiodwiyanto210500151/169446136-pixel-cat-image-vector-illustration-of-pixel-art.jpg"
                         }
                         alt={user.name || "User"}
                       />
                       <AvatarFallback className="rounded-lg">CN</AvatarFallback>
                     </Avatar>
-                    <div className="grid flex-1 text-left text-sm leading-tight">
+                    <div className="grid flex-1 text-left text-sm leading-tight authorusw">
                       <span className="truncate font-semibold">
                         {user.name || "Unknown User"}
                       </span>

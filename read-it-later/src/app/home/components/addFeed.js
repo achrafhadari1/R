@@ -16,121 +16,22 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useState, useEffect } from "react";
 import AxiosInstance from "@/lib/axiosInstance";
-export const AddFeed = ({ refreshFeed, setProgress, setDisabledFeedId }) => {
-  const [feedUrl, setFeedUrl] = useState("");
-  const [parsedArticles, setParsedArticles] = useState([]); // State to store parsed articles
-  const [error, setError] = useState(null);
-  const [feedLinks, setFeedLinks] = useState([]);
-  const [feedId, setFeedId] = useState(null);
+export const AddFeed = ({
+  feedUrl,
+  setFeedUrl,
+  progress,
+  setProgress,
+  disabledFeedId,
+  setDisabledFeedId,
+  setFeedId, // Destructure setFeedId here
+  handleCompleteFeedProcess,
+}) => {
   const [loading, setLoading] = useState(false);
-  const handleCompleteFeedProcess = async () => {
-    try {
-      setProgress(0); // Set initial progress
 
-      const token = getCookie("token");
-      const addFeedResponse = await AxiosInstance.post(
-        "/feeds",
-        { feed_url: feedUrl },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      console.log("Feed added:", addFeedResponse.data);
-      const newFeedId = addFeedResponse.data.id;
-      setFeedId(newFeedId); // Update state
-      refreshFeed();
-      setProgress(20); // Set progress as 20% after feed added
-      setDisabledFeedId(newFeedId);
-      // Step 2: Fetch the feed and parse RSS
-      const proxyUrl =
-        "https://api.allorigins.win/get?url=" + encodeURIComponent(feedUrl);
-
-      const fetchResponse = await fetch(proxyUrl);
-      if (!fetchResponse.ok) {
-        throw new Error(
-          `Failed to fetch RSS feed: ${fetchResponse.statusText}`
-        );
-      }
-
-      const responseJson = await fetchResponse.json(); // Get the RSS content
-      const rssText = responseJson.contents;
-
-      // Parse the RSS feed
-      const parser = new DOMParser();
-      const rssDoc = parser.parseFromString(rssText, "application/xml");
-      const items = rssDoc.querySelectorAll("item");
-
-      const articles = Array.from(items).map((item) => ({
-        link: item.querySelector("link")?.textContent || "No Link",
-      }));
-      const links = articles.slice(0, 6).map((article) => article.link);
-      console.log("Parsed Articles:", articles);
-
-      // Step 3: Parse individual articles
-      const parsedData = [];
-      for (const link of links) {
-        const parseResponse = await fetch("/api/parse", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ url: link }),
-        });
-
-        if (!parseResponse.ok) {
-          console.error(`Failed to parse article: ${link}`);
-          continue;
-        }
-
-        const data = await parseResponse.json();
-        parsedData.push({
-          title: data.title,
-          lead_image: data.lead_image_url,
-          content: data.content,
-          date_published: data.date_published,
-          url: data.url,
-          domain: data.domain,
-          excerpt: data.excerpt,
-          word_count: data.word_count,
-          author: data.author,
-        });
-      }
-
-      // Step 4: Save parsed articles to the backend
-      setProgress(60); // Set progress to 60% while saving articles
-      const saveArticlesResponse = await AxiosInstance.post(
-        "/articles/saveArticlesFeed",
-        {
-          feed_id: newFeedId,
-          articles: parsedData,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      console.log("Articles saved:", saveArticlesResponse.data);
-      setFeedUrl(""); // Reset input
-      setProgress(100); // Set progress to 100% after completing the process
-    } catch (error) {
-      console.error("Error in the feed process:", error);
-      setError("Failed to complete feed process. Please try again.");
-    } finally {
-      setDisabledFeedId(null); // Enable feed after process completes
-      setLoading(false);
-    }
-  };
-
-  // Call this function on button click or as needed
   const handleProcessFeed = async (e) => {
     e.preventDefault();
     setLoading(true);
-    await handleCompleteFeedProcess(e);
+    await handleCompleteFeedProcess(feedUrl); // Call the parent's handleCompleteFeedProcess
   };
 
   return (
@@ -143,7 +44,7 @@ export const AddFeed = ({ refreshFeed, setProgress, setDisabledFeedId }) => {
       <DialogContent className="sm:max-w-md z-index-top">
         <DialogHeader>
           <DialogTitle>Add feed</DialogTitle>
-          <DialogDescription>it may takes some time!</DialogDescription>
+          <DialogDescription>it may take some time!</DialogDescription>
         </DialogHeader>
         <div className="flex items-center space-x-2">
           <div className="grid flex-1 gap-2">
@@ -153,7 +54,7 @@ export const AddFeed = ({ refreshFeed, setProgress, setDisabledFeedId }) => {
             <Input
               id="link"
               value={feedUrl}
-              onChange={(e) => setFeedUrl(e.target.value)}
+              onChange={(e) => setFeedUrl(e.target.value)} // Update feedUrl state
               placeholder="Enter RSS feed URL"
             />
           </div>
@@ -162,6 +63,7 @@ export const AddFeed = ({ refreshFeed, setProgress, setDisabledFeedId }) => {
             type="submit"
             size="sm"
             className="px-3"
+            disabled={loading || disabledFeedId}
           >
             <span className="sr-only">submit</span>
             <FiCheckSquare />

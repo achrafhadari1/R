@@ -1,6 +1,8 @@
 "use client";
 import { getCookie } from "cookies-next";
 import React, { useState, useEffect } from "react";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Separator } from "@/components/ui/separator";
 import AxiosInstance from "@/lib/axiosInstance";
 import {
   Sheet,
@@ -34,9 +36,9 @@ export const Highlights = ({ id, articleContent }) => {
 
   return (
     <SheetContent>
-      <SheetHeader>
+      <SheetHeader className="overflow-auto">
         <SheetTitle className="text-4xl">Highlights</SheetTitle>
-        <div>
+        <ScrollArea className="h-full w-full rounded-md ">
           {Object.entries(highlights).map(([id, highlight]) => (
             <div className="flex" key={id}>
               <div
@@ -53,7 +55,7 @@ export const Highlights = ({ id, articleContent }) => {
               </div>
             </div>
           ))}
-        </div>
+        </ScrollArea>
       </SheetHeader>
     </SheetContent>
   );

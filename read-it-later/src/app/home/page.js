@@ -57,7 +57,12 @@ export default function Home() {
       },
     })
       .then((response) => {
-        setArticles(response.data); // Update state with the latest articles
+        const filteredArticles = response.data.filter(
+          (article) => article.is_from_feed === 0
+        );
+
+        console.log(filteredArticles); // Log the filtered articles
+        setArticles(filteredArticles);
       })
       .catch((error) => {
         console.error(error); // Handle any errors
@@ -73,11 +78,15 @@ export default function Home() {
           <Breadcrumb>
             <BreadcrumbList>
               <BreadcrumbItem className="hidden md:block">
-                <BreadcrumbLink href="#">Home</BreadcrumbLink>
+                <BreadcrumbLink className="ubuntu-regular" href="#">
+                  Home
+                </BreadcrumbLink>
               </BreadcrumbItem>
               <BreadcrumbSeparator className="hidden md:block" />
               <BreadcrumbItem>
-                <BreadcrumbPage>Articles</BreadcrumbPage>
+                <BreadcrumbPage className="text-[1.2rem] ubuntu-medium">
+                  Articles
+                </BreadcrumbPage>
               </BreadcrumbItem>
             </BreadcrumbList>
           </Breadcrumb>

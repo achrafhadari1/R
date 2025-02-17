@@ -43,7 +43,7 @@
 }
 .title-article-home {
   font-family: "cheltenham";
-  font-weight: 700;
+  font-weight: 400;
   font-style: normal;
   height: 7rem;
   font-size: 1.3rem;
@@ -65,6 +65,9 @@
 .ArticleContainerSingle:hover .lead_image {
   opacity: 0.7;
   transition: ease-in-out 0.2s;
+}
+.ArticleContainerSingle:hover .title-article-home {
+  text-decoration: underline;
 }
 .ArticleContainerSingle img {
   border-top-right-radius: 1rem;

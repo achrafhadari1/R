@@ -61,22 +61,24 @@ export function RegisterForm({ className, ...props }) {
           Enter your email below to login to your account
         </p>
 
-        {Object.keys(errors).length === 1 ? (
-          // If there's exactly one error, display it
-          Object.keys(errors).map((key) => (
-            <p
-              key={key}
-              className="text-balance text-sm text-red-700 dark:text-zinc-400"
-            >
-              {errors[key][0]}
+        {
+          Object.keys(errors).length === 1 ? (
+            // If there's exactly one error, display it
+            Object.keys(errors).map((key) => (
+              <p
+                key={key}
+                className="text-balance text-sm text-red-700 dark:text-zinc-400"
+              >
+                {errors[key][0]}
+              </p>
+            ))
+          ) : Object.keys(errors).length > 1 ? (
+            // If there are multiple errors, display a message
+            <p className="text-balance text-sm text-red-700 dark:text-zinc-400">
+              Too many errors
             </p>
-          ))
-        ) : (
-          // If there are multiple errors, display a message
-          <p className="text-balance text-sm text-red-700 dark:text-zinc-400">
-            Too many errors
-          </p>
-        )}
+          ) : null // If there are no errors, render nothing
+        }
       </div>
       <div className="grid gap-6">
         <div className="grid gap-2">
@@ -84,7 +86,7 @@ export function RegisterForm({ className, ...props }) {
           <Input
             id="username"
             type="text"
-            placeholder="Acme"
+            placeholder="LATR"
             required
             className={errors.name ? "border-red-700 border " : "normal"}
             value={formData.name}
