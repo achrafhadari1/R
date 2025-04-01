@@ -110,6 +110,7 @@ export default function Home() {
                     url={article.url} // Make sure your response includes this URL
                     date_published={formattedDate} // Pass the formatted date
                     domain={article.domain}
+                    progress={article.progress}
                     author={article.author}
                     word_count={article.word_count}
                     refreshArticles={refreshArticles}

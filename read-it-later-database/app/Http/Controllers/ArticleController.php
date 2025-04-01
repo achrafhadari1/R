@@ -140,6 +140,21 @@ class ArticleController extends Controller implements HasMiddleware
         return response()->json(['articles' => $savedArticles], 201);
     }
     
-    
+    public function updateProgress(Request $request, $articleId) // ✅ Get articleId from route
+{
+    $request->validate([
+        'progress' => 'required|integer|min:0|max:100',
+    ]);
+
+    $article = Article::where('id', $articleId)
+                      ->where('user_id', auth()->id()) // Ensure user owns the article
+                      ->firstOrFail();
+
+    $article->update(['progress' => $request->progress]);
+
+    return response()->json(['message' => 'Progress updated successfully', 'article' => $article]);
+}
+
+
 
 }

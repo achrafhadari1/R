@@ -27,6 +27,7 @@
   text-decoration: underline;
 }
 
+.pdfprnt-buttons,
 aside {
   display: none;
 }
@@ -174,6 +175,13 @@ aside {
   height: 134px;
   text-align: center;
   color: rgb(43, 43, 43);
+}
+.wp-caption .wp-caption-text {
+  margin: 2rem 0;
+  font-size: 0.766666666666667rem;
+  line-height: 1em;
+  color: #888;
+  text-align: left;
 }
 #vi-container {
   display: none;

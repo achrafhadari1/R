@@ -13,6 +13,7 @@ export const ArticleContainerGrid = ({
   date_published,
   domain,
   author,
+  progress,
   word_count,
   url,
   refreshArticles,
@@ -38,12 +39,18 @@ export const ArticleContainerGrid = ({
   const mainDomain = getMainDomain(domain);
 
   return (
-    <div className="relative w-64 flex flex-col gap-3 ArticleContainerSingle">
+    <div className="relative w-64 flex flex-col ArticleContainerSingle">
       <img
         className="h-48 object-cover lead_image"
         src={lead_image_url}
         alt="lead_image"
       />
+      {progress > 0 && (
+        <div
+          className="bg-yellow-400 h-[5px] -translate-y-[0.3rem] transition-all duration-300"
+          style={{ width: `${progress}%` }}
+        ></div>
+      )}
       <div
         onClick={gotoArticle}
         className="absolute w-full h-full hidden popuptogo"

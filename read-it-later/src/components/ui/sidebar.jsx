@@ -302,7 +302,7 @@ const SidebarInput = React.forwardRef(({ className, ...props }, ref) => {
       ref={ref}
       data-sidebar="input"
       className={cn(
-        "h-8 w-full bg-white shadow-none focus-visible:ring-2 focus-visible:ring-sidebar-ring dark:bg-zinc-950",
+        "h-auto w-full bg-white shadow-none focus-visible:ring-2 focus-visible:ring-sidebar-ring dark:bg-zinc-950",
         className
       )}
       {...props}
@@ -456,7 +456,7 @@ const sidebarMenuButtonVariants = cva(
           "bg-white shadow-[0_0_0_1px_hsl(var(--sidebar-border))] hover:bg-sidebar-accent hover:text-sidebar-accent-foreground hover:shadow-[0_0_0_1px_hsl(var(--sidebar-accent))] dark:bg-zinc-950",
       },
       size: {
-        default: "h-8 text-sm",
+        default: "h-auto text-sm",
         sm: "h-7 text-xs",
         lg: "h-12 text-sm group-data-[collapsible=icon]:!p-0",
       },

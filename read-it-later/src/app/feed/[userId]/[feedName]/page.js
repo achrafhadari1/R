@@ -141,7 +141,9 @@ export default function Feed() {
               {loading ? (
                 <Skeleton className="w-60 h-8 mb-2" />
               ) : (
-                <div className="text-6xl authorusw_title">{feedData.title}</div>
+                <div className="text-6xl text-center authorusw_title">
+                  {feedData.title}
+                </div>
               )}
               {/* Description Skeleton */}
               {loading ? (

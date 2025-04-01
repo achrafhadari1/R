@@ -18,6 +18,7 @@ Route::post('/login', [AuthController::class,'login']);
 Route::post('/logout', [AuthController::class,'logout'])->middleware('auth:sanctum');
 Route::post('/articles/{articleId}/highlights', [HighlightController::class, 'store'])->middleware('auth:sanctum');
 Route::post('/articles/saveArticlesFeed', [ArticleController::class, 'storeFromFeed'])->middleware('auth:sanctum');
+Route::put('/article/{articleId}/progress', [ArticleController::class, 'updateProgress'])->middleware('auth:sanctum');
 
 // Get highlights for a specific article
 Route::get('/articles/{articleId}/highlights', [HighlightController::class, 'getHighlightsForArticle']);

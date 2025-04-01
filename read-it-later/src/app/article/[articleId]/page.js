@@ -1,4 +1,4 @@
-"use client"; // This makes the component a client component
+"use client"; // Ensures the component runs on the client-side
 
 import { useState, useEffect, useRef } from "react";
 import { SelectMenu } from "../components/selectMenu";
@@ -9,16 +9,20 @@ import { useParams } from "next/navigation";
 import "../../style/article.css";
 import { Navbar } from "../components/navbar";
 import { getCookie } from "cookies-next";
+import debounce from "lodash.debounce"; // Import lodash debounce
 
 export default function Article() {
   const params = useParams();
-  const articleId = decodeURIComponent(params.articleId); // Decode the URL-encoded articleId
-  const [article, setArticle] = useState(null); // Article data
+  const articleId = decodeURIComponent(params.articleId);
+  const [article, setArticle] = useState(null);
   const [date, setDate] = useState("");
-  const [id, title] = articleId.split("+"); // Split into ID and title
-  const [domain, setdomain] = useState("");
-  const [articleContent, setArticleContent] = useState(""); // Initialize content state
+  const [id, title] = articleId.split("+");
+  const [domain, setDomain] = useState("");
+  const [articleContent, setArticleContent] = useState("");
 
+  const lastSentScrollRef = useRef(0);
+  const scrollDataRef = useRef([]); // Stores batched scroll data
+  const lastSentProgressRef = useRef(null);
   useEffect(() => {
     const token = getCookie("token");
     if (id) {
@@ -26,7 +30,7 @@ export default function Article() {
         headers: {
           Authorization: `Bearer ${token}`,
         },
-      }) // Fetch article data by ID
+      })
         .then((response) => {
           setArticle(response.data.article);
           if (response.data.article.date_published) {
@@ -36,14 +40,32 @@ export default function Article() {
             );
             setDate(formattedDate);
           }
-          setdomain(getMainDomain(response.data.article.domain));
-          setArticleContent(response.data.article.content); // Set initial article content
+          setDomain(getMainDomain(response.data.article.domain));
+          setArticleContent(response.data.article.content);
+
+          // ✅ Restore scroll position based on progress
+          setTimeout(() => {
+            restoreScrollPosition(response.data.article.progress - 10);
+          }, 100);
         })
         .catch((error) => {
-          console.error(error); // Handle any errors
+          console.error(error);
         });
     }
   }, [id]);
+  const restoreScrollPosition = (progress) => {
+    if (progress > 0) {
+      const scrollHeight = document.documentElement.scrollHeight;
+      const scrollPosition = (progress / 100) * scrollHeight;
+
+      window.scrollTo({ top: scrollPosition, behavior: "smooth" });
+
+      // ✅ Delay before enabling scroll tracking (without triggering re-render)
+      setTimeout(() => {
+        lastSentScrollRef.current = progress; // ✅ Use ref instead of state
+      }, 3000);
+    }
+  };
 
   const getMainDomain = (domain) => {
     if (!domain) return "";
@@ -57,7 +79,7 @@ export default function Article() {
     const token = getCookie("token");
     const data = {
       title: article.title,
-      content: updatedContent || articleContent, // Updated content or current content
+      content: updatedContent || articleContent,
       lead_image: article.lead_image,
       date_published: article.date_published,
       author: article.author,
@@ -71,17 +93,65 @@ export default function Article() {
         },
       });
       console.log("Article updated successfully", response.data);
-      setArticleContent(updatedContent); // Update local content state
+      setArticleContent(updatedContent);
     } catch (error) {
       console.error("Error updating article", error);
     }
   };
 
+  // --------------- Scroll Tracking Optimization ---------------
+
+  useEffect(() => {
+    const handleScroll = debounce(() => {
+      const scrollTop = window.scrollY;
+      const scrollHeight =
+        document.documentElement.scrollHeight - window.innerHeight;
+      const scrollPercentage = Math.round((scrollTop / scrollHeight) * 100);
+
+      if (Math.abs(scrollPercentage - lastSentScrollRef.current) >= 10) {
+        scrollDataRef.current.push(scrollPercentage);
+        lastSentScrollRef.current = scrollPercentage; // ✅ Update ref instead of state
+      }
+    }, 500); // Debounce for 500ms
+
+    window.addEventListener("scroll", handleScroll);
+
+    // Send batched data every 5 seconds
+    const sendScrollDataInterval = setInterval(() => {
+      const token = getCookie("token");
+
+      if (scrollDataRef.current.length > 0 && token) {
+        const lastProgress =
+          scrollDataRef.current[scrollDataRef.current.length - 1]; // ✅ Get last recorded progress
+
+        if (lastProgress !== lastSentProgressRef.current) {
+          console.log(lastProgress);
+          AxiosInstance.put(
+            `/article/${id}/progress`,
+            { progress: lastProgress }, // ✅ Send only required field
+            { headers: { Authorization: `Bearer ${token}` } }
+          )
+            .then(() => {
+              lastSentProgressRef.current = lastProgress; // ✅ Update last sent progress
+              scrollDataRef.current = []; // ✅ Clear batch after sending
+            })
+            .catch((error) => console.error("Scroll tracking failed", error));
+        }
+      }
+    }, 3000);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      clearInterval(sendScrollDataInterval);
+    };
+  }, [id]);
+
+  // -----------------------------------------------------------
+
   if (!article)
     return (
       <div className="mt-10 articleConta flex w-4/5 m-auto flex-col">
         <div className="space-y-2">
-          {" "}
           <Skeleton className="h-12  w-2/4 mb-7 " />
         </div>
         <Skeleton className="h-[500px] rounded-xl mb-7" />
@@ -89,14 +159,9 @@ export default function Article() {
           <Skeleton className="h-6 w-1/3 mb-7" />
         </div>
         <div className="space-y-2">
-          <Skeleton className="h-4 w-full" />
-          <Skeleton className="h-4  w-full" />
-          <Skeleton className="h-4 w-full" />
-          <Skeleton className="h-4  w-full" />
-          <Skeleton className="h-4 w-full" />
-          <Skeleton className="h-4  w-full" />
-          <Skeleton className="h-4 w-full" />
-          <Skeleton className="h-4  w-full" />
+          {[...Array(8)].map((_, i) => (
+            <Skeleton key={i} className="h-4 w-full" />
+          ))}
         </div>
       </div>
     );
@@ -112,14 +177,14 @@ export default function Article() {
           <h2 className="article_header ">{article.title}</h2>
 
           <img
-            src={article.lead_image || "default-image-url.jpg"} // Fallback in case `lead_image_url` is undefined
+            src={article.lead_image || "default-image-url.jpg"}
             alt="Article Lead"
             className="w-full mt-8 mb-8 rounded-2xl"
             style={{ maxWidth: "100%", height: "auto" }}
           />
           <div>
             <div className="red authorusw mt-8 mb-8">
-              Written by {article.author || domain} on {date || "Unknown"}{" "}
+              Written by {article.author || domain} on {date || "Unknown"}
             </div>
           </div>
 
