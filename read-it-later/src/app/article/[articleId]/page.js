@@ -355,6 +355,7 @@ export default function Article() {
           <Navbar
             id={id}
             is_from_feed={article.is_from_feed}
+            is_archived={article.is_archived}
             articleContent={articleContent}
           />
           <h2 className="article_header">{article.title}</h2>

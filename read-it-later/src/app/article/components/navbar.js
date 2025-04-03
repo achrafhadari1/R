@@ -5,6 +5,8 @@ import { getCookie } from "cookies-next";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Sheet, SheetTrigger } from "@/components/ui/sheet";
+import { toast } from "sonner";
+
 import {
   Tooltip,
   TooltipContent,
@@ -19,16 +21,19 @@ import { cn } from "@/lib/utils";
 
 // Add these imports instead
 import { Home, Archive, Trash, Check, Plus, BookOpen } from "lucide-react";
+import { MdOutlineUnarchive } from "react-icons/md";
 
 export const Navbar = ({
   id,
   is_from_feed,
   articleContent,
+  is_archived,
   fetchHighlights,
 }) => {
   const [isRemoving, setIsRemoving] = useState(false);
   const [isRemoved, setIsRemoved] = useState(false);
   const [activeItem, setActiveItem] = useState(null);
+  const [isArticleArchived, setIsArticleArchived] = useState(is_archived);
 
   const router = useRouter();
   const gotoHome = () => {
@@ -52,9 +57,75 @@ export const Navbar = ({
         setTimeout(() => {
           setIsRemoved(true); // Fade out after animation
         }, 1000); // Adjust timing for animation effect
+        toast.success("Success!", {
+          description: "Your action was completed successfully",
+        });
       }
     } catch (error) {
       console.error("Error updating is_from_feed:", error);
+      toast.error("Error!", {
+        description: "Something went wrong. Please try again.",
+      });
+    }
+  };
+
+  const handleArchive = async () => {
+    const token = getCookie("token");
+
+    try {
+      const response = await AxiosInstance.put(
+        `/articles/${id}/archive`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        setIsArticleArchived(1);
+        // You can add toast notification here if you have a toast component
+        toast.success("Success!", {
+          description: "Your action was completed successfully",
+        });
+      }
+    } catch (error) {
+      console.error("Error archiving article:", error);
+      toast.error("Error!", {
+        description: "Something went wrong. Please try again.",
+      });
+      // You can add error toast here
+    }
+  };
+
+  const handleUnarchive = async () => {
+    const token = getCookie("token");
+
+    try {
+      const response = await AxiosInstance.put(
+        `/articles/${id}/unarchive`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        setIsArticleArchived(0);
+        toast.success("Success!", {
+          description: "Your action was completed successfully",
+        });
+        // You can add toast notification here if you have a toast component
+      }
+    } catch (error) {
+      console.error("Error unarchiving the article:", error);
+      toast.error("Error!", {
+        description: "Something went wrong. Please try again.",
+      });
+      // You can add error toast here
     }
   };
 
@@ -170,22 +241,28 @@ export const Navbar = ({
 
           {/* Archive button */}
           <Tooltip>
-            <TooltipTrigger disabled asChild>
+            <TooltipTrigger asChild>
               <motion.button
-                disabled
                 className={cn(
                   "flex items-center justify-center w-10 h-10 rounded-lg",
                   "text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100",
                   "transition-all duration-200"
                 )}
+                onClick={
+                  isArticleArchived === 0 ? handleArchive : handleUnarchive
+                }
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
               >
-                <Archive size={22} strokeWidth={2} />
+                {isArticleArchived === 0 ? (
+                  <Archive size={22} strokeWidth={2} />
+                ) : (
+                  <MdOutlineUnarchive size={22} className="text-yellow-500" />
+                )}
               </motion.button>
             </TooltipTrigger>
-            <TooltipContent disabled side="right" sideOffset={10}>
-              <p>Archive</p>
+            <TooltipContent side="right" sideOffset={10}>
+              <p>{isArticleArchived === 0 ? "Archive" : "Unarchive"}</p>
             </TooltipContent>
           </Tooltip>
 

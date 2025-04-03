@@ -237,9 +237,7 @@ export function AppSidebar({ ...props }) {
           setDisabledFeedId(feedId); // Disable the feed while processing
 
           // Fetch RSS feed using a proxy
-          const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(
-            feedUrl
-          )}`;
+          const proxyUrl = `/api/proxy?url=${encodeURIComponent(feedUrl)}`;
           const fetchResponse = await fetch(proxyUrl);
           if (!fetchResponse.ok)
             throw new Error(

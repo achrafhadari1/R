@@ -2,22 +2,17 @@ import React from "react";
 import { CiTrash } from "react-icons/ci";
 import AxiosInstance from "../../../lib/axiosInstance";
 import { getCookie } from "cookies-next";
-import { useToast } from "@/hooks/use-toast";
 import { Trash } from "lucide-react";
+import { toast } from "sonner";
 
 export const DeleteArticle = ({ id, refreshArticles, onDelete, icon }) => {
-  const { toast } = useToast();
   const handleDelete = () => {
     const token = getCookie("token");
-
-    console.log(`Attempting to delete article with ID: ${id}`);
 
     AxiosInstance.delete(`/articles/${id}`, {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then((response) => {
-        console.log("Server response:", response.data);
-
         let articleDeleted = false;
 
         for (let i = 0; i < localStorage.length; i++) {
@@ -39,15 +34,10 @@ export const DeleteArticle = ({ id, refreshArticles, onDelete, icon }) => {
           }
         }
 
-        if (!articleDeleted) console.warn("Article was not found in any feed.");
-
         refreshArticles?.();
         onDelete?.();
-
-        console.log("Showing toast...");
-        toast({
-          title: "Delete Article",
-          description: "Article deleted successfully",
+        toast.success("Success!", {
+          description: "Your action was completed successfully",
         });
       })
       .catch((error) => {
@@ -56,11 +46,8 @@ export const DeleteArticle = ({ id, refreshArticles, onDelete, icon }) => {
           error.response?.data || error.message
         );
 
-        console.log("Showing error toast...");
-        toast({
-          variant: "destructive",
-          title: "Uh oh! Something went wrong.",
-          description: "There was a problem with your request.",
+        toast.error("Error!", {
+          description: "Something went wrong. Please try again.",
         });
       });
   };
