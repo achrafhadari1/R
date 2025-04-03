@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { CiStickyNote } from "react-icons/ci";
-import { Textarea } from "@/components/ui/textarea";
-import { useCallback } from "react";
 import { getCookie } from "cookies-next";
-import { MdOutlineSpeakerNotes } from "react-icons/md";
-import { v4 as uuidv4 } from "uuid";
+import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
 import AxiosInstance from "@/lib/axiosInstance";
+import { ArrowLeft } from "lucide-react";
+
 export const SelectMenu = ({
   saveArticleChanges,
   articleContent,
@@ -405,32 +405,35 @@ export const SelectMenu = ({
       {/* Popup Form */}
       {isPopupOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white rounded-lg shadow-lg w-1/3 p-6">
-            <h2 className="text-xl font-semibold mb-4">Add your note</h2>
+          <div className="bg-[#3f3f46] text-white rounded-2xl shadow-lg w-1/3 p-6 ">
             <Textarea
               required
-              placeholder="What do you think?"
-              value={state} // Pre-fill with the current note
-              onChange={(e) => setState(e.target.value)} // Update state on change
-              className="w-full h-32 mb-4 border rounded-lg p-2"
+              placeholder="Add Note"
+              value={state}
+              onChange={(e) => setState(e.target.value)}
+              className="h-32 w-full text-[1.1rem] resize-none rounded-md bg-transparent px-4 py-3 border-transparent  outline-none"
             />
 
-            <div className="flex justify-end">
-              <button
-                onClick={() => setIsPopupOpen(false)}
-                className="px-4 py-2 bg-gray-300 rounded-lg hover:bg-gray-400 mr-2"
-              >
-                Cancel
-              </button>
+            <div className="flex justify-between items-center">
               <button
                 onClick={() => {
                   setIsPopupOpen(false);
-                  handleSaveNote("orange", state); // Pass the selected color and note text
+                  setState("");
                 }}
-                className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+                className="p-2 rounded-lg "
               >
-                Save
+                <ArrowLeft className=" h-4 w-4 text-white" />
               </button>
+              <Button
+                onClick={() => {
+                  setIsPopupOpen(false);
+                  handleSaveNote("orange", state);
+                  setState("");
+                }}
+                className="bg-[#3f3f46] border border-white text-white hover:bg-white hover:text-[#3f3f46] px-4 py-2 rounded-lg"
+              >
+                Submit Note
+              </Button>
             </div>
           </div>
         </div>

@@ -25,6 +25,7 @@ class Article extends Model
         'user_id', // Add this
     'feed_id', // Add this if it exists
     'is_from_feed',
+    'is_archived', 
     ];
 
     // Relationship with User

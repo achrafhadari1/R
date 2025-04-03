@@ -1,33 +1,44 @@
 import Mercury from "@postlight/mercury-parser";
 import puppeteer from "puppeteer";
 
-// Utility function to parse articles using both Mercury and Puppeteer
+const countWords = (text) => {
+  return text
+    ? text
+        .trim()
+        .split(/\s+/)
+        .filter((word) => word.length > 0).length
+    : 0;
+};
 export async function parseArticle(url) {
   if (!url) {
     throw new Error("URL is required");
   }
 
   try {
-    // Step 1: Use Mercury to parse the URL and get the basic metadata
+    //  Mercury to parse the URL and get the basic metadata
     const mercuryResult = await Mercury.parse(url);
     console.log("Mercury Result:", mercuryResult);
 
-    // Step 2: Use Puppeteer to scrape additional content (like specific article content, images, etc.)
     const puppeteerResult = await scrapeWithPuppeteer(url);
 
-    // Step 3: Combine results from both sources
+    const puppeteerContent = puppeteerResult?.content || "";
+    const mercuryContent = mercuryResult?.content || "";
+
+    const finalContent =
+      countWords(puppeteerContent) < 40 ? mercuryContent : puppeteerContent;
+
     const combinedResult = {
       title: mercuryResult.title || puppeteerResult.title,
       lead_image_url:
         mercuryResult.lead_image_url ||
         puppeteerResult.lead_image_url ||
         "/not-found.png",
-      content: puppeteerResult.content || mercuryResult.content,
+      content: finalContent,
       date_published: mercuryResult.date_published,
       url: mercuryResult.url,
       domain: mercuryResult.domain,
-      excerpt: mercuryResult.excerpt,
-      word_count: mercuryResult.word_count,
+      excerpt: mercuryResult.excerpt || "",
+      word_count: countWords(finalContent),
       author: mercuryResult.author,
     };
 

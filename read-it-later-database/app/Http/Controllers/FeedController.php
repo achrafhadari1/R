@@ -47,6 +47,22 @@ class FeedController extends Controller
         return response()->json($feed);
     }
     
+public function checkStatus(Request $request) {
+    $url = $request->query('url');
+
+    if (!$url) {
+        return response()->json(['error' => 'URL is required'], 400);
+    }
+
+    // Simulated example: Replace with real DB lookup
+    $feed = Feed::where('url', $url)->first();
+
+    if (!$feed) {
+        return response()->json(['status' => 'not_found']);
+    }
+
+    return response()->json(['status' => $feed->processing_complete ? 'ready' : 'processing']);
+}
 
     public function getArticlesByFeedId($feedId)
 {

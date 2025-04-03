@@ -26,7 +26,7 @@ export const Highlights = ({ id, articleContent }) => {
           }
         );
         sethighlights(response.data);
-        console.log(highlights);
+        console.log(response.data);
       } catch (error) {
         console.error("Error saving highlight:", error);
       }
@@ -35,7 +35,7 @@ export const Highlights = ({ id, articleContent }) => {
   }, [articleContent]);
 
   return (
-    <SheetContent>
+    <SheetContent aria-describedby={undefined}>
       <SheetHeader className="overflow-auto">
         <SheetTitle className="text-4xl">Highlights</SheetTitle>
         <ScrollArea className="h-full w-full rounded-md ">

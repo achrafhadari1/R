@@ -401,6 +401,16 @@ hr {
 .gv-7n-iwW-dockWrapper {
   display: none !important;
 }
+textarea {
+  box-shadow: 0 0 0 0;
+}
+.focus-visible\:ring-zinc-950:focus-visible {
+  --tw-ring-opacity: 0;
+  --tw-ring-color: rgb(9 9 11 / var(--tw-ring-opacity, 0));
+  outline: 0px solid transparent;
+  outline-offset: 0px;
+  border-color: transparent;
+}
 table {
   width: 100%;
   border-collapse: collapse;

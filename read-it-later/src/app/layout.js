@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/breadcrumb";
 import { Separator } from "@/components/ui/separator";
 import { AppSidebar } from "@/components/app-sidebar";
+import { Toaster } from "@/components/ui/sonner";
 import AppProvider from "./Context/AppContext";
 
 export const metadata = {
@@ -27,6 +28,7 @@ export default function RootLayout({ children }) {
       <body>
         <AppProvider>
           <div className="Articles">{children} </div>
+          <Toaster />
         </AppProvider>
       </body>
     </html>

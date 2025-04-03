@@ -1,9 +1,10 @@
 "use client";
+
 import React, { useEffect, useState } from "react";
-import "../style/home.css";
-import { AddArticle } from "./components/addArticle";
-import { ArticleContainerGrid } from "./components/ArticleContainerGrid";
-import AxiosInstance from "../../lib/axiosInstance";
+import "../../style/home.css";
+import { AddArticle } from "../components/addArticle";
+import { ArticleContainerGrid } from "../components/ArticleContainerGrid";
+import AxiosInstance from "@/lib/axiosInstance";
 import { RiArrowDownDoubleFill } from "react-icons/ri";
 import { getCookie } from "cookies-next";
 import { format } from "date-fns";
@@ -24,7 +25,6 @@ import {
 } from "@/components/ui/breadcrumb";
 import { Separator } from "@/components/ui/separator";
 import { AppSidebar } from "@/components/app-sidebar";
-import { AddFeed } from "./components/addFeed";
 export default function Home() {
   const [articles, setArticles] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -39,7 +39,7 @@ export default function Home() {
     })
       .then((response) => {
         const filteredArticles = response.data.filter(
-          (article) => article.is_from_feed === 0 && article.is_archived === 0
+          (article) => article.is_from_feed === 0 && article.is_archived === 1
         );
 
         console.log(filteredArticles); // Log the filtered articles
@@ -62,7 +62,7 @@ export default function Home() {
     })
       .then((response) => {
         const filteredArticles = response.data.filter(
-          (article) => article.is_from_feed === 0 && article.is_archived === 0
+          (article) => article.is_from_feed === 0 && article.is_archived === 1
         );
 
         setArticles(filteredArticles);
@@ -83,14 +83,14 @@ export default function Home() {
           <Breadcrumb>
             <BreadcrumbList>
               <BreadcrumbItem className="hidden md:block">
-                <BreadcrumbLink className="ubuntu-regular" href="#">
+                <BreadcrumbLink className="ubuntu-regular" href="/home">
                   Home
                 </BreadcrumbLink>
               </BreadcrumbItem>
               <BreadcrumbSeparator className="hidden md:block" />
               <BreadcrumbItem>
                 <BreadcrumbPage className="text-[1.2rem] ubuntu-medium">
-                  Articles
+                  Archived Articles
                 </BreadcrumbPage>
               </BreadcrumbItem>
             </BreadcrumbList>
@@ -147,17 +147,13 @@ export default function Home() {
               // No articles found, show a cute message
               <>
                 <div className="text-center mt-10 text-lg text-gray-500">
-                  <p>Your library is empty. Try adding articles!</p>
+                  <p>No archived Articles!</p>
                   <p className="mt-2 text-sm text-gray-400">
-                    You can start by adding some of your favorite articles.
+                    You can start by archiving some of your old articles.
                   </p>
-                </div>
-                <div>
-                  <RiArrowDownDoubleFill className=" animate-[bounce_1.4s_ease-in-out_infinite] w-8 h-8 absolute bottom-[6rem] right-[1.7rem]" />
                 </div>
               </>
             )}
-            <AddArticle refreshArticles={refreshArticles} />
           </div>
         </div>
       </SidebarInset>

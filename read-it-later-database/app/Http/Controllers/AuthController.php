@@ -23,29 +23,30 @@ class AuthController extends Controller
             'token'=>$token->plainTextToken
         ];
     }
-    public function login (Request $request)
-    {
-        $request ->validate([
-            'email'=>'required|email',
-            'password'=>'required'
-        ]);
-        $user= User::where('email',$request->email)->first();
-        if (!$user || !Hash::check($request->password, $user->password)){
-            return [
-                'errors'=>[
-                    'email'=>[
-                        'The provided credentials are incorrect.'
-                    ]
-                ]
-            ];
-        }
-        $token=$user->createToken($user->email);
+    public function login(Request $request)
+{
+    $request->validate([
+        'email' => 'required|email',
+        'password' => 'required'
+    ]);
 
-        return [
-            'user'=> $user,
-            'token'=>$token->plainTextToken
-        ];
+    $user = User::where('email', $request->email)->first();
+    if (!$user || !Hash::check($request->password, $user->password)) {
+        return response()->json([
+            'errors' => [
+                'email' => ['The provided credentials are incorrect.']
+            ]
+        ], 401);  // Use 401 Unauthorized status code
     }
+
+    $token = $user->createToken($user->email);
+
+    return response()->json([
+        'user' => $user,
+        'token' => $token->plainTextToken
+    ]);
+}
+
     public function logout (Request $request)
     {
         $request->user()->tokens()->delete();

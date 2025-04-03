@@ -18,10 +18,18 @@ Route::post('/login', [AuthController::class,'login']);
 Route::post('/logout', [AuthController::class,'logout'])->middleware('auth:sanctum');
 Route::post('/articles/{articleId}/highlights', [HighlightController::class, 'store'])->middleware('auth:sanctum');
 Route::post('/articles/saveArticlesFeed', [ArticleController::class, 'storeFromFeed'])->middleware('auth:sanctum');
+Route::put('/articles/{articleId}/remove-from-feed', [ArticleController::class, 'removeFromFeed']);
 Route::put('/article/{articleId}/progress', [ArticleController::class, 'updateProgress'])->middleware('auth:sanctum');
+Route::put('/articles/{article}/archive', [ArticleController::class, 'archive'])->middleware('auth:sanctum');
+Route::put('/articles/{article}/unarchive', [ArticleController::class, 'unarchive'])->middleware('auth:sanctum');;
+Route::get('/articles/archived', [ArticleController::class, 'archived'])->middleware('auth:sanctum');;
+Route::get('/articles/non-archived', [ArticleController::class, 'nonArchived'])->middleware('auth:sanctum');;
+
 
 // Get highlights for a specific article
 Route::get('/articles/{articleId}/highlights', [HighlightController::class, 'getHighlightsForArticle']);
+Route::delete('/highlights/{highlightId}', [ArticleController::class, 'deleteHighlight']);
+
 
 // Delete a specific highlight
 Route::delete('/highlights/{highlightId}', [HighlightController::class, 'deleteHighlight'])->middleware('auth:sanctum');
@@ -38,5 +46,5 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/feeds/{id}', [FeedController::class, 'update']); // Update a feed
     Route::get('/feeds/{feedId}/articles', [FeedController::class, 'getArticlesByFeedId']);
     Route::get('/feeds/{id}', [FeedController::class, 'show']); // Delete a feed
-
+    Route::get('/feeds/status', [FeedController::class, 'checkStatus']); 
 });

@@ -37,7 +37,6 @@ export function NavUser() {
 
   async function handleLogout(e) {
     e.preventDefault();
-    console.log("Token:", token);
 
     try {
       const res = await AxiosInstance.post(
@@ -50,10 +49,12 @@ export function NavUser() {
         }
       );
       console.log("Logout response:", res);
+
+      router.push("/login"); // Clear token state
       setUser(null); // Clear user state
       setToken(null);
-      router.push(`/login`); // Clear token state
       deleteCookie("token"); // Delete token cookie
+
       // Redirect to home page
     } catch (error) {
       console.error("Error during logout:", error.response || error.message);
@@ -121,28 +122,17 @@ export function NavUser() {
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuGroup className="z-index-top">
-                  <DropdownMenuItem>
+                  <DropdownMenuItem disabled>
                     <Sparkles />
                     Themes
                   </DropdownMenuItem>
                 </DropdownMenuGroup>
+
                 <DropdownMenuSeparator />
-                <DropdownMenuGroup>
-                  <DropdownMenuItem>
-                    <BadgeCheck />
-                    Account
-                  </DropdownMenuItem>
-                  <DropdownMenuItem>
-                    <CreditCard />
-                    Feeds
-                  </DropdownMenuItem>
-                  <DropdownMenuItem>
-                    <Bell />
-                    Feedback
-                  </DropdownMenuItem>
-                </DropdownMenuGroup>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={handleLogout}>
+                <DropdownMenuItem
+                  className="cursor-pointer "
+                  onClick={handleLogout}
+                >
                   <LogOut />
                   Log out
                 </DropdownMenuItem>

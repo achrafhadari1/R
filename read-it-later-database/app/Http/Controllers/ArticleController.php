@@ -155,6 +155,46 @@ class ArticleController extends Controller implements HasMiddleware
     return response()->json(['message' => 'Progress updated successfully', 'article' => $article]);
 }
 
+public function removeFromFeed($articleId)
+{
+    $article = Article::where('id', $articleId)
+                      ->where('user_id', auth()->id()) // Ensure user owns the article
+                      ->firstOrFail();
+
+    $article->update(['is_from_feed' => 0]);
+
+    return response()->json(['message' => 'Article removed from feed', 'article' => $article]);
+}
+
+public function archive(Article $article)
+{
+    Gate::authorize('modify', $article);
+    // Archive the article by setting is_archived to 1
+    $article->update(['is_archived' => 1]);
+
+    return response()->json(['message' => 'Article archived successfully', 'article' => $article]);
+}
+public function unarchive(Article $article)
+{
+    Gate::authorize('modify', $article);
+
+    // Check if the article is archived
+    if ($article->is_archived == 1) {
+        // Un-archive the article by setting is_archived to 0
+        $article->update(['is_archived' => 0]);
+
+        return response()->json(['message' => 'Article unarchived successfully', 'article' => $article]);
+    }
+
+    return response()->json(['message' => 'Article is already not archived', 'article' => $article]);
+}
+public function archived()
+    {
+        // Fetch all archived articles for the currently authenticated user
+        return Article::where('user_id', auth()->id())
+            ->where('is_archived', 1) // Only fetch articles that are archived
+            ->get();
+    }
 
 
 }
