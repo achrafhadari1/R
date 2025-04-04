@@ -2,14 +2,19 @@ import { NextResponse } from "next/server";
 
 // Middleware to protect routes
 export function middleware(request) {
-  // Get the token from cookies
-  const token = request.cookies.get("token")?.value; // This will access the cookies sent with the request
+  const token = request.cookies.get("token")?.value;
+  const { pathname } = request.nextUrl;
 
-  const { pathname } = request.nextUrl; // Get the pathname for simplicity
+  const publicPaths = ["/login", "/register", "/favicon.ico", "/api", "/_next"];
+
+  // Skip middleware for public paths
+  if (publicPaths.some((path) => pathname.startsWith(path))) {
+    return NextResponse.next();
+  }
 
   // Redirect unauthenticated users trying to access protected routes
-  if (!token && pathname.startsWith("/home")) {
-    return NextResponse.redirect(new URL("/register", request.url));
+  if (!token) {
+    return NextResponse.redirect(new URL("/login", request.url));
   }
 
   // Redirect authenticated users from root ("/") to "/home"
@@ -25,12 +30,6 @@ export function middleware(request) {
     return NextResponse.redirect(new URL("/home", request.url));
   }
 
-  // Redirect unauthenticated users trying to access articles
-  if (!token && pathname.startsWith("/articles")) {
-    return NextResponse.redirect(new URL("/login", request.url));
-  }
-
-  // Allow access to the requested page if no conditions match
   return NextResponse.next();
 }
 

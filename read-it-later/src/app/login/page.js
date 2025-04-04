@@ -8,6 +8,8 @@ import { GalleryVerticalEnd } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { toast } from "sonner";
+
 export default function Login() {
   const { setToken } = useContext(AppContext);
   const [errors, setErrors] = useState({});
@@ -18,35 +20,36 @@ export default function Login() {
   const router = useRouter();
 
   async function handleLogin(e) {
-    e.preventDefault(); // Prevent form submission
-    setErrors({}); // Reset previous errors
+    e.preventDefault();
+    setErrors({});
+
     try {
-      // Make the API call
-      const axiosResponse = await AxiosInstance.post("/login", formData);
-      console.log("Login Success Response: ", axiosResponse.data); // Log the successful response data
+      toast.promise(
+        (async () => {
+          const axiosResponse = await AxiosInstance.post("/login", formData);
+          console.log("Login Success Response:", axiosResponse.data);
 
-      // Only proceed with setting the token if the login is successful
-      if (axiosResponse.data.token) {
-        setCookie("token", axiosResponse.data.token, {
-          maxAge: 60 * 60 * 24 * 7,
-          path: "/",
-        });
-        setToken(axiosResponse.data.token);
-        router.push("/home");
-      }
+          if (axiosResponse.data.token) {
+            setCookie("token", axiosResponse.data.token, {
+              maxAge: 60 * 60 * 24 * 7,
+              path: "/",
+            });
+            setToken(axiosResponse.data.token);
+            router.push("/home");
+          }
+        })(),
+        {
+          loading: "Logging in...",
+          success: "Logged in successfully!",
+          error: "Something went wrong. Try again.",
+        }
+      );
     } catch (err) {
-      // Log a user-friendly error message without showing the full error object
       if (err.response) {
-        // If the error has a response, it's likely from the API
         const errorData = err.response.data.errors;
-
-        // Log only the error message instead of the full error object
         console.log("API Error Response:", errorData);
-
-        // Update the state with the received errors to display on screen
         setErrors(errorData);
       } else {
-        // Log the error message for unexpected errors (network issues, etc.)
         console.error("Unexpected error:", err.message);
       }
     }
@@ -59,15 +62,11 @@ export default function Login() {
           <div className="flex flex-col gap-6">
             {/* Logo and Title */}
             <div className="flex flex-col items-center gap-2">
-              <a
-                href="#"
-                className="flex flex-col items-center gap-2 font-medium"
-              >
-                <div className="flex h-40 w-40 items-center justify-center rounded-md">
-                  <img src="/logo-2.svg" className="w-full h-full" alt="" />
-                </div>
-                <span className="sr-only">Acme Inc.</span>
-              </a>
+              <div className="flex h-40 w-40 items-center justify-center rounded-md">
+                <img src="/logo-2.svg" className="w-full h-full" alt="" />
+              </div>
+              <span className="sr-only">Latr Inc.</span>
+
               <h1 className="text-xl font-bold">Welcome to LATR Inc.</h1>
               <div className="text-center text-sm">
                 Don't have an account?{" "}
