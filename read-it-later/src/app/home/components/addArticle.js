@@ -17,7 +17,7 @@ export const AddArticle = ({ refreshArticles }) => {
       const token = getCookie("token");
 
       const response = await AxiosInstance.post(
-        "/api/parse",
+        "/parse",
         { url },
         {
           headers: {
