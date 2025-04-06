@@ -1,6 +1,5 @@
 import Mercury from "@postlight/mercury-parser";
-import puppeteer from "puppeteer-core";
-import chromium from "chrome-aws-lambda";
+import puppeteer from "puppeteer";
 
 const countWords = (text) => {
   return text
@@ -51,13 +50,8 @@ export async function parseArticle(url) {
 }
 
 // Function to scrape additional content using Puppeteer
-const scrapeWithPuppeteer = async (url) => {
-  const browser = await puppeteer.launch({
-    executablePath: await chromium.executablePath,
-    headless: chromium.headless,
-    args: chromium.args,
-  });
-
+async function scrapeWithPuppeteer(url) {
+  const browser = await puppeteer.launch();
   const page = await browser.newPage();
   await page.goto(url, { timeout: 0 });
 
@@ -73,11 +67,11 @@ const scrapeWithPuppeteer = async (url) => {
     const lead_image_url = document.querySelector("img")
       ? document.querySelector("img").src
       : "";
-    const content = articleElement.innerHTML;
+    const content = articleElement.innerHTML; // Use the entire article HTML content
 
     return { title, lead_image_url, content };
   });
 
   await browser.close();
   return data;
-};
+}
