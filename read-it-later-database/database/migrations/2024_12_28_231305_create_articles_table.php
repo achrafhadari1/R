@@ -15,16 +15,16 @@ return new class extends Migration
 Schema::create('articles', function (Blueprint $table) {
     $table->id();
     $table->foreignId('user_id')->constrained()->cascadeOnDelete();
-    $table->string('title');
-    $table->string('lead_image');
-    $table->text('content')->nullable(); // Removed default('text') for longText
+    $table->text('title');
+$table->text('lead_image');
+$table->longText('content')->nullable(); // Removed default('text') for longText
     $table->string('date_published')->nullable();
     $table->string('url');
     $table->string('domain');
     $table->string('excerpt');
     $table->integer('word_count')->nullable();
     $table->string('author', 100)->nullable()->default('text');
-    $table->integer('progress')->unsigned()->nullable()->default(12);
+    $table->integer('progress')->unsigned()->nullable()->default(0);
     $table->timestamps();
 });
     }
