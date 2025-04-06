@@ -1,5 +1,5 @@
 import Mercury from "@postlight/mercury-parser";
-import puppeteer from "puppeteer";
+import { chromium } from "playwright";
 
 const countWords = (text) => {
   return text
@@ -19,7 +19,7 @@ export async function parseArticle(url) {
     const mercuryResult = await Mercury.parse(url);
     console.log("Mercury Result:", mercuryResult);
 
-    const puppeteerResult = await scrapeWithPuppeteer(url);
+    const puppeteerResult = await scrapeWithPlaywright(url);
 
     const puppeteerContent = puppeteerResult?.content || "";
     const mercuryContent = mercuryResult?.content || "";
@@ -50,8 +50,8 @@ export async function parseArticle(url) {
 }
 
 // Function to scrape additional content using Puppeteer
-async function scrapeWithPuppeteer(url) {
-  const browser = await puppeteer.launch();
+async function scrapeWithPlaywright(url) {
+  const browser = await chromium.launch(); // Launch Playwright browser
   const page = await browser.newPage();
   await page.goto(url, { timeout: 0 });
 
