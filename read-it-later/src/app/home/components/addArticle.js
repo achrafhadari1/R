@@ -16,13 +16,16 @@ export const AddArticle = ({ refreshArticles }) => {
     try {
       const token = getCookie("token");
 
-      const response = await fetch("/api/parse", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ url }), // Send the URL to the API route
-      });
+      const response = await AxiosInstance.post(
+        "/api/parse",
+        { url },
+        {
+          headers: {
+            Authorization: token ? `Bearer ${token}` : undefined,
+          },
+        }
+      );
+
       // Check if the fetch request was successful
       if (!response.ok) {
         throw new Error("Failed to fetch article");
