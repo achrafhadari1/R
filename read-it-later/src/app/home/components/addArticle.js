@@ -1,17 +1,52 @@
-import { useState } from "react";
-import { getCookie } from "cookies-next";
+"use client";
 
-import AxiosInstance from "../../../lib/axiosInstance";
-export const AddArticle = ({ refreshArticles }) => {
+import React, { useState } from "react";
+import { getCookie } from "cookies-next";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { PlusCircle, Loader2, Check, AlertCircle, X } from "lucide-react";
+import AxiosInstance from "@/lib/axiosInstance";
+
+export function AddArticle({ refreshArticles }) {
   const [url, setUrl] = useState("");
-  const [data, setData] = useState([]);
+  const [isOpen, setIsOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
   const [error, setError] = useState(null);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault(); // Prevent page reload
+  const validateUrl = (url) => {
+    try {
+      new URL(url);
+      return true;
+    } catch (err) {
+      return false;
+    }
+  };
 
-    // Reset state
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     setError(null);
+    setSuccess(false);
+
+    if (!url.trim()) {
+      setError("Please enter a URL");
+      return;
+    }
+
+    if (!validateUrl(url)) {
+      setError("Please enter a valid URL");
+      return;
+    }
+
+    setIsLoading(true);
 
     try {
       const token = getCookie("token");
@@ -21,21 +56,20 @@ export const AddArticle = ({ refreshArticles }) => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ url }), // Send the URL to the API route
+        body: JSON.stringify({ url }),
       });
-      // Check if the fetch request was successful
+
       if (!response.ok) {
-        throw new Error("Failed to fetch article");
+        throw new Error(
+          response.status === 404
+            ? "Could not extract content from this URL"
+            : "Failed to fetch article"
+        );
       }
 
-      // Parse the response from the API
       const data = await response.json();
-      // Get the article data
-      setData(data); // Store the article data in state
-      console.log(data);
-      console.log();
-      // Send the article data to your backend using axios
-      const axiosResponse = await AxiosInstance.post(
+
+      await AxiosInstance.post(
         "/articles",
         {
           title: data.title,
@@ -54,34 +88,99 @@ export const AddArticle = ({ refreshArticles }) => {
           },
         }
       );
-      // Handle successful axios response (e.g., redirect or show success message)
-      console.log("Article saved:", axiosResponse.data);
+
+      setSuccess(true);
+      setUrl("");
       refreshArticles();
+
+      setTimeout(() => {
+        setIsOpen(false);
+        setSuccess(false);
+      }, 2000);
     } catch (err) {
-      // Handle errors (either from fetch or axios)
-      setError(err.message);
+      setError(
+        err instanceof Error ? err.message : "An unknown error occurred"
+      );
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
-    <div className="absolute flex-row-reverse w-28 flex right-3 bottom-5 home_svg_container">
-      <div className="text-3xl svg_image z-10">
-        <img src="/add-circle-svgrepo-com.svg" alt="Add Icon" />
-      </div>
-
-      {/* Add a form element to handle the submit */}
-      <form onSubmit={handleSubmit} className="z-0 absolute addArticleForm">
-        <input
-          className="z-0 absolute addArticleInput"
-          type="text"
-          value={url}
-          onChange={(e) => setUrl(e.target.value)}
-          placeholder="Add URL"
-        />
-      </form>
-
-      {/* Error Message Display */}
-      {error && <div className="error-message">{error}</div>}
+    <div className="fixed bottom-6 right-6 flex flex-col items-end space-y-4 z-50">
+      {isOpen ? (
+        <Card className="w-full max-w-md shadow-lg animate-in slide-in-from-bottom-5 duration-300">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-lg font-medium">
+              Add New Article
+            </CardTitle>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setIsOpen(false)}
+              aria-label="Close"
+            >
+              <X className="h-4 w-4" />
+            </Button>
+          </CardHeader>
+          <form onSubmit={handleSubmit}>
+            <CardContent className="space-y-4 pt-4">
+              <div className="space-y-2">
+                <Input
+                  type="text"
+                  placeholder="Paste article URL here"
+                  value={url}
+                  onChange={(e) => setUrl(e.target.value)}
+                  disabled={isLoading}
+                  className="w-full"
+                  aria-label="Article URL"
+                />
+                {error && (
+                  <Alert variant="destructive" className="py-2">
+                    <AlertCircle className="h-4 w-4" />
+                    <AlertDescription className="ml-2 text-sm">
+                      {error}
+                    </AlertDescription>
+                  </Alert>
+                )}
+                {success && (
+                  <Alert className="bg-green-50 text-green-800 border-green-200 py-2">
+                    <Check className="h-4 w-4 text-green-600" />
+                    <AlertDescription className="ml-2 text-sm">
+                      Article added successfully!
+                    </AlertDescription>
+                  </Alert>
+                )}
+              </div>
+            </CardContent>
+            <CardFooter>
+              <Button
+                type="submit"
+                className="w-full"
+                disabled={isLoading || !url.trim()}
+              >
+                {isLoading ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Processing...
+                  </>
+                ) : (
+                  <>Add Article</>
+                )}
+              </Button>
+            </CardFooter>
+          </form>
+        </Card>
+      ) : (
+        <Button
+          onClick={() => setIsOpen(true)}
+          size="lg"
+          className="rounded-full h-14 w-14 shadow-lg"
+          aria-label="Add article"
+        >
+          <PlusCircle className="h-6 w-6" />
+        </Button>
+      )}
     </div>
   );
-};
+}

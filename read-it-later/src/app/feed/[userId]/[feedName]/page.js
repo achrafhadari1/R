@@ -6,8 +6,9 @@ import { useRouter } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
 import { useParams } from "next/navigation";
 import { Skeleton } from "@/components/ui/skeleton";
-import "../../../style/feed.css";
 import { FaArrowRightLong } from "react-icons/fa6";
+import "../../../style/feed.css";
+
 import { format } from "date-fns";
 import {
   SidebarInset,
@@ -39,12 +40,10 @@ export default function Feed() {
     if (id) {
       const storedFeedData = localStorage.getItem(`feedData_${id}`);
       const storedArticles = localStorage.getItem(`articles_${id}`);
-      console.log(storedArticles);
+
       if (storedFeedData && storedArticles) {
-        console.log("used");
         setArticles(JSON.parse(storedArticles));
         setFeedData(JSON.parse(storedFeedData));
-
         setLoading(false); // Set loading to false if we have cached data
       } else {
         fetchArticles(id);
@@ -96,6 +95,7 @@ export default function Feed() {
       console.error("Error fetching feed data:", error);
     }
   };
+
   const groupArticlesByDate = (articles) => {
     return articles.reduce((acc, article) => {
       const formattedDate = article.created_at
@@ -109,6 +109,7 @@ export default function Feed() {
       return acc;
     }, {});
   };
+
   const filteredArticles = articles.slice(6);
   // Grouped articles
   const groupedArticles = groupArticlesByDate(filteredArticles);
@@ -282,7 +283,12 @@ export default function Feed() {
                       <hr />
                       <div className="flex pt-4 pb-4">
                         <div className="image-left-width">
-                          <div className="title_article_small">
+                          <div
+                            onClick={() =>
+                              gotoArticle(article.title, article.id)
+                            }
+                            className="title_article_small"
+                          >
                             {article.title}
                           </div>
                           <div className="line-clamp-3 excerpt_article_small">
@@ -371,9 +377,13 @@ export default function Feed() {
                         {article.title}
                       </div>
                       <img
-                        className="w-40 h-32 object-cover article_feed_small_right"
+                        className="article_feed_small_right"
                         src={article.lead_image || "/placeholder.svg"}
                         alt="article image"
+                        onError={(e) => {
+                          e.target.onerror = null; // Prevent infinite loop
+                          e.target.src = `/no_image/no_${randomNumber}.jpg`;
+                        }}
                       />
                     </div>
                   </div>
@@ -393,19 +403,20 @@ export default function Feed() {
               sortedDates.map((date, idx) => (
                 <div key={idx}>
                   {/* Date Header */}
-                  <div className=" authorusw_title red flex items-center gap-4 mt-8 mb-8">
-                    <div className="h-[1px]  bg-black flex-grow"></div>
+                  <div className="authorusw_title red flex items-center gap-4 mt-8 mb-8">
+                    <div className="h-[1px] bg-black flex-grow"></div>
                     <h2 className="text-3xl text-red-600 uppercase whitespace-nowrap">
                       {date}
                     </h2>
                     <div className="h-[1px] bg-black flex-grow"></div>
                   </div>
 
-                  <div className="grid grid-cols-6 containerfeed2 gap-8 justify-between">
+                  <div className="grid grid-cols-[repeat(auto-fit,minmax(0,1fr))] max-w-full containerfeed2 gap-8 justify-between">
                     {groupedArticles[date].map((article, index) => (
                       <div key={index} className="flex flex-col">
                         {/* Article Image */}
                         <img
+                          className="w-full h-48 object-cover"
                           src={
                             article.lead_image ||
                             `/no_image/no_${
