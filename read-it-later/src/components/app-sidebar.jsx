@@ -142,19 +142,27 @@ export function AppSidebar({ ...props }) {
             });
           }
 
-          // Save parsed articles to the backend
-          await AxiosInstance.post(
-            "/articles/saveArticlesFeed",
-            {
-              feed_id: newFeedId,
-              articles: parsedData,
-            },
-            {
-              headers: { Authorization: `Bearer ${token}` },
+          // Save each article individually to avoid batch failure
+          for (const article of parsedData) {
+            try {
+              await AxiosInstance.post(
+                "/articles/saveArticlesFeed",
+                {
+                  feed_id: newFeedId,
+                  articles: [article],
+                },
+                {
+                  headers: { Authorization: `Bearer ${token}` },
+                }
+              );
+            } catch (error) {
+              console.error(`Failed to save article: ${article.title}`, error);
+              continue;
             }
-          );
+          }
+
           refreshFeed();
-          setFeedUrl(""); // Reset input
+          setFeedUrl("");
         } catch (error) {
           console.error("Error in the feed process:", error);
           setError("Failed to complete feed process. Please try again.");
@@ -233,19 +241,22 @@ export function AppSidebar({ ...props }) {
             localStorage.removeItem(storageKey);
           }
 
-          setProgress(0); // Start progress tracking
-          setDisabledFeedId(feedId); // Disable the feed while processing
+          setProgress(0);
+          setDisabledFeedId(feedId);
 
           // Fetch RSS feed using a proxy
           const proxyUrl = `/api/proxy?url=${encodeURIComponent(feedUrl)}`;
           const fetchResponse = await fetch(proxyUrl);
-          if (!fetchResponse.ok)
+          if (!fetchResponse.ok) {
             throw new Error(
               `Failed to fetch RSS feed: ${fetchResponse.statusText}`
             );
+          }
 
           const responseJson = await fetchResponse.json();
           const rssText = responseJson.contents;
+
+          // Parse the RSS feed
           const parser = new DOMParser();
           const rssDoc = parser.parseFromString(rssText, "application/xml");
           const items = rssDoc.querySelectorAll("item");
@@ -259,8 +270,8 @@ export function AppSidebar({ ...props }) {
           }));
 
           const links = articles.slice(0, 6).map((article) => article.link);
-          const parsedData = [];
 
+          const parsedData = [];
           for (const link of links) {
             const parseResponse = await fetch("/api/parse", {
               method: "POST",
@@ -303,20 +314,31 @@ export function AppSidebar({ ...props }) {
               )
           );
 
-          if (newArticles.length > 0) {
-            await AxiosInstance.post(
-              "/articles/saveArticlesFeed",
-              { feed_id: feedId, articles: newArticles },
-              { headers: { Authorization: `Bearer ${token}` } }
-            );
+          // Save new articles individually to avoid batch failure
+          for (const article of newArticles) {
+            try {
+              await AxiosInstance.post(
+                "/articles/saveArticlesFeed",
+                {
+                  feed_id: feedId,
+                  articles: [article], // wrap in array for backend compatibility
+                },
+                {
+                  headers: { Authorization: `Bearer ${token}` },
+                }
+              );
+            } catch (error) {
+              console.error(`Failed to save article: ${article.title}`, error);
+              continue;
+            }
           }
 
-          setProgress(100); // Mark progress as complete
+          setProgress(100); // Done
         } catch (error) {
           console.error("Error refreshing feed:", error);
-          throw error; // This will trigger the toast error message
+          throw error;
         } finally {
-          setDisabledFeedId(null); // Enable the feed after processing
+          setDisabledFeedId(null);
         }
       })(),
       {
@@ -326,6 +348,7 @@ export function AppSidebar({ ...props }) {
       }
     );
   };
+
   const deleteFeed = async (feedId) => {
     try {
       const token = getCookie("token"); // Get the token from cookies
